@@ -18,7 +18,7 @@ SEPLAN <- data.table(read_excel("IMB-GYN.xlsx", sheet = "RegiõesSEPLAN"))
 SEPLAN$Localidade <- factor(SEPLAN$Localidade)
 SEPLAN$RegiaoSEPLAN <- factor(SEPLAN$RegiaoSEPLAN)
 
-#Area Territorial
+# Area Territorial
 Area <- data.table(read_excel("IMB-GYN.xlsx", sheet = "Área Territorial"))
 Area$Localidade <- factor(Area$Localidade)
 Area2016 <- filter(Area,Ano == "2016")
@@ -39,7 +39,20 @@ TaxaAlfabetizacao <- merge(RegioesGoias,TaxaAlfabetizacao,by = "Localidade",all 
 # Emprego CAGED
 EmpregoCAGED <- data.table(read_excel("IMB-GYN.xlsx", sheet = "Emprego - CAGED"))
 EmpregoCAGED$Localidade <- factor(EmpregoCAGED$Localidade)
-EmpregoCAGED <- merge(x = RegioesGoias,y = EmpregoCAGED,by=c("Localidade"),all = TRUE)
+Categorias <- select(EmpregoCAGED, -ends_with(c("Admitidos","Desligados")))
+Admitidos <- select(EmpregoCAGED, ends_with("Admitidos"))
+Emprego.lista <- sub(pattern = " Admitidos",replacement = "",colnames(Admitidos))
+colnames(Admitidos) <- Emprego.lista
+Admitidos <- cbind(Categorias,Admitidos)
+Admitidos$Situacao <- factor("Admitidos")
+Desligados <- select(EmpregoCAGED, ends_with("Desligados"))
+colnames(Desligados) <- Emprego.lista
+Desligados$Situacao <- factor("Desligados")
+Desligados <- cbind(Categorias,Desligados)
+EmpregoCAGED <- rbind(Admitidos,Desligados)
+EmpregoCAGED$Total <- NULL
+EmpregoCAGED <- melt(data = EmpregoCAGED,id.vars = c("Localidade","Ano","Situacao"),variable.name = "Setor",value.name = "Total")
+EmpregoCAGED <- merge(x = RegioesGoias,y = EmpregoCAGED,by=c("Localidade"), all = TRUE)
 
 # Emprego RAIS
 EmpregoRAIS <- data.table(read_excel("IMB-GYN.xlsx", sheet = "Emprego - RAIS"))
@@ -51,7 +64,7 @@ PopulacaoProjecao <- data.table(read_excel("IMB-GYN.xlsx", sheet = "PopulacaoPro
 PopulacaoProjecao$Localidade <- factor(PopulacaoProjecao$Localidade)
 PopulacaoProjecao <- merge(x = RegioesGoias,y = PopulacaoProjecao,by=c("Localidade"),all = TRUE)
 
-#Abastacimento de Agua e Esgoto
+# Abastacimento de Agua e Esgoto
 AtendimentoAgua <- data.table(read_excel("IMB-GYN.xlsx", sheet = "Abastecimento de Água"))
 AtendimentoAgua$Localidade <- factor(AtendimentoAgua$Localidade)
 Esgoto <- data.table(read_excel("IMB-GYN.xlsx", sheet = "Esgoto"))
