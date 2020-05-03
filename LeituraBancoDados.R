@@ -1,6 +1,3 @@
-#Script que lê todas as planilhas do arquivo Dados/IMB-GYN.xlsx e transforma em um banco de dados RDATA para ser manipulado pelo R durante a construção do relatório.
-rm(list = ls())
-
 # Mesoregiões
 library(readxl)
 library(data.table)

@@ -1,6 +1,9 @@
+load(file = "Dados/POCV.RData")
+
 LocRefMeso <- RegioesGoias %>% 
   filter(Mesorregiao == LocRef$Mesorregiao) %>% 
-  select(Localidade)
+  select(Localidade) %>% 
+  unique()
 
 LocRefMicro <- RegioesGoias %>% 
   filter(Mesorregiao == LocRef$Mesorregiao) %>% 
