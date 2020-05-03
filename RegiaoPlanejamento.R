@@ -6,7 +6,7 @@ LocalSEGPLAN <- RegioesGoias %>%
 
 PopulacaoSEGPLAN <- PopulacaoProjecao %>% 
   filter(Ano == AnoRef & RPSEGPLAN == LocRef$RPSEGPLAN) %>% 
-  summarise(sum(Quantidade))
+  summarise(Populacao = sum(Quantidade))
 
 AreaSEGPLAN <- Area %>% 
   filter(Ano == max(Area$Ano) & RPSEGPLAN == LocRef$RPSEGPLAN) %>% 
