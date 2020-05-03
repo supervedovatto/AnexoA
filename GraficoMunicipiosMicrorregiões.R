@@ -1,3 +1,5 @@
+load(file = "Dados/POCV.RData")
+
 RegioesGoias %>% 
   filter(Mesorregiao == LocRef$Mesorregiao) %>% 
   ggplot(aes(x=factor(Microrregiao),fill=Microrregiao)) +

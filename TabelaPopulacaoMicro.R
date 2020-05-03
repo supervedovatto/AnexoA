@@ -1,3 +1,5 @@
+load(file = "Dados/POCV.RData")
+
 AreaMicro <- Area %>% 
   filter(Ano == max(Area$Ano) & Mesorregiao == LocRef$Mesorregiao) %>% 
   group_by(Microrregiao) %>% 
