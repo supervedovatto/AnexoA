@@ -1,3 +1,5 @@
+load(file = "Dados/POCV.RData")
+
 Micro.Populacao <- PopulacaoProjecao %>% 
   filter(Microrregiao == LocRef$Microrregiao) %>% 
   filter(Ano == AnoRef) %>%
@@ -25,4 +27,5 @@ tabelafinal <- rbind(maiores,outras) %>%
   scale_fill_brewer(palette="Set3") +
   theme_void() +
   xlim(0.5,2.5)
+
 rm(maiores,outras,Micro.Populacao)

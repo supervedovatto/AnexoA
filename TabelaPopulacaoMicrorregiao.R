@@ -1,3 +1,5 @@
+load(file = "Dados/POCV.RData")
+
 Micro.Area <- Area %>%
   filter(Ano == max(Area$Ano) & Microrregiao == LocRef$Microrregiao) %>% 
   select(Localidade,AreaTerritorial)
