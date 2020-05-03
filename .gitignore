@@ -6,3 +6,4 @@
 *.RData
 Outros\ Dados/*
 .Rproj.user
+.Rhistory
