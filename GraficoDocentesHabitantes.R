@@ -1,6 +1,6 @@
 load(file = "Dados/POCV.RData")
 
-PopulacaoProjecao %>% 
+grafico <- PopulacaoProjecao %>% 
   group_by(Localidade,Ano) %>% 
   summarise(Populacao =  sum(Quantidade)) %>% 
   merge(Docentes,by = c("Localidade","Ano")) %>% 

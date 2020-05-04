@@ -4,7 +4,7 @@ Micro.Area <- Area %>%
   filter(Ano == max(Area$Ano) & Microrregiao == LocRef$Microrregiao) %>% 
   select(Localidade,AreaTerritorial)
 
-PopulacaoProjecao %>% 
+tabela <- PopulacaoProjecao %>% 
   filter(Microrregiao == LocRef$Microrregiao) %>% 
   filter(Ano == AnoRef) %>%
   group_by(Localidade) %>% 

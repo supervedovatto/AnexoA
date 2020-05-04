@@ -1,4 +1,4 @@
-SEGPLAN.Populacao <- PopulacaoProjecao %>% 
+grafico <- PopulacaoProjecao %>% 
   filter(Ano == AnoRef) %>% 
   group_by(RPSEGPLAN) %>% 
   summarise(Populacao = sum(Quantidade)) %>% 

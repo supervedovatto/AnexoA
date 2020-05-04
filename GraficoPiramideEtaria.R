@@ -13,7 +13,7 @@ Piramide$Faixa <- forcats::fct_collapse(Piramide$Faixa,
 
 ajuste.coef <- 0.075*max(Piramide$Quantidade)
 
-Piramide %>%
+grafico <- Piramide %>%
   group_by(Ano,Sexo,Faixa) %>%
   summarise(Quantidade = sum(Quantidade)) %>%
   mutate(Proporcao = Quantidade/sum(Quantidade)) %>% 
@@ -28,5 +28,3 @@ Piramide %>%
     scale_fill_manual(values=c("#377eb8","#e41a1c")) +
     labs(y = "População",x="Faixa etária") +
     facet_wrap(~Ano,ncol = 1)
-
-rm(ajuste.coef,AnosEscolha,AnoInicial)

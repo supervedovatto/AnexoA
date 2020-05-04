@@ -1,6 +1,6 @@
 load(file = "Dados/POCV.RData")
 
-PopulacaoProjecao %>% 
+grafico <- PopulacaoProjecao %>% 
   filter(Mesorregiao == LocRef$Mesorregiao,Ano == AnoRef) %>% 
   group_by(Microrregiao) %>% 
   summarise(Habitantes = sum(Quantidade)) %>%  

@@ -5,7 +5,7 @@ SEGPLAN.Areas <- Area %>%
   group_by(Localidade) %>% 
   summarise(Area = sum(AreaTerritorial))
 
-SEGPLAN.Populacao <- PopulacaoProjecao %>% 
+tabela <- PopulacaoProjecao %>% 
   filter(Ano == AnoRef & RPSEGPLAN == LocRef$RPSEGPLAN) %>% 
   group_by(Localidade) %>% 
   summarise(Populacao = sum(Quantidade)) %>% 

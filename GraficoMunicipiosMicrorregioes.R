@@ -1,6 +1,6 @@
 load(file = "Dados/POCV.RData")
 
-RegioesGoias %>% 
+grafico <- RegioesGoias %>% 
   filter(Mesorregiao == LocRef$Mesorregiao) %>% 
   ggplot(aes(x=factor(Microrregiao),fill=Microrregiao)) +
   geom_bar(stat = "count") +

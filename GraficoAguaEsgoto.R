@@ -1,6 +1,6 @@
 load(file = "Dados/POCV.RData")
 
-AguaEsgoto %>% 
+grafico <- AguaEsgoto %>% 
   filter(Localidade == LocRef$Localidade & Ano >= 2005) %>% 
   ggplot(aes(x = Ano, y = Percentual)) + 
   geom_line(aes(color = Servico), size = 1) +

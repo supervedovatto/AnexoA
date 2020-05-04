@@ -16,16 +16,16 @@ outras <- Micro.Populacao %>%
             Populacao = sum(Populacao),
             freq = sum(freq))
 
-tabelafinal <- rbind(maiores,outras) %>% 
+grafico <- rbind(maiores,outras) %>% 
   arrange(desc(Localidade)) %>%
   mutate(ypos = cumsum(freq)-freq/2) %>% 
   ggplot(aes(x=2,y=freq,fill=Localidade)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=3) +
-  labs(x="", y="",fill = paste("Microrregião de",LocRef$Microrregiao)) +
-  coord_polar("y", start=0) +
-  scale_fill_brewer(palette="Set3") +
-  theme_void() +
-  xlim(0.5,2.5)
+    geom_bar(stat = "identity") +
+    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=3) +
+    labs(x="", y="",fill = paste("Microrregião de",LocRef$Microrregiao)) +
+    coord_polar("y", start=0) +
+    scale_fill_brewer(palette="Set3") +
+    theme_void() +
+    xlim(0.5,2.5)
 
 rm(maiores,outras,Micro.Populacao)
