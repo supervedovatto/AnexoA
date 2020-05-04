@@ -146,13 +146,6 @@ source(file = "GraficoPopulacaoCidadesSEGPLAN.R")
 grafico
 ```
 
-A pirâmide etária da cidade de goiânia baseada na população projetada para 2020 é apresentada no gráfico à seguir:
-
-```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
-source(file = "GraficoPiramideEtaria.R")
-grafico
-```
-
 # Aspectos Econômicos
 
 ## Painel das Profissões
@@ -170,16 +163,18 @@ source(file = "GraficoAguaEsgoto.R")
 grafico
 ```
 
+A pirâmide etária da cidade de goiânia baseada na população projetada para 2020 é apresentada no gráfico à seguir:
+
+```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
+source(file = "GraficoPiramideEtaria.R")
+grafico
+```
+
 ## Densidade Demográfica
 
 # Aspectos Educacionais
 
-```{r,fig.cap=paste("Número de docentes nas redes municipal, estadual, federal e particular atuando nos ensinos pré-escolar, fundamental e médio em",LocRef$Localidade,"para cada 100 mil habitantes.")}
-source(file = "GraficoDocentesHabitantes.R")
-grafico
-```
-
-```{r,fig.cap=paste("Número de estabelescimentos de ensino em",LocRef$Localidade,"nas redes federal, estatual, municipal e particular.")}
+```{r,fig.cap=paste("Número de estabelescimentos de ensino em",LocRef$Localidade,"por rede de ensino.")}
 source(file = "GraficoEstabelescimentos.R")
 grafico
 ```
@@ -187,12 +182,11 @@ grafico
 Corresponde ao total de pessoas em atividades docentes em sala de aula no ensino pré-escolar, no ensino fundamental e no ensino médio.
 O mesmo docente pode ministrar aulas em redes e municípios diferentes.
 Os dados são referentes à `r max(Docentes$Ano)`.
-```{r}
-# Docentes %>% 
-#   filter(Microrregiao == LocRef$Microrregiao & Ano == max(Docentes$Ano)) %>% 
-#   dcast(Localidade~Rede,value.var = "Quantidade") %>%
-#   kable(caption = paste("Quantidade de docentes atuando em", LocRef,"nos ensinos pré-escolar, fundamental e médio nas diferentes redes de ensino."))
+```{r,fig.cap=paste("Número de docentes nas redes municipal, estadual, federal e particular atuando nos ensinos pré-escolar, fundamental e médio em",LocRef$Localidade,"para cada 100 mil habitantes.")}
+source(file = "GraficoDocentesHabitantes.R")
+grafico
 ```
+
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
 
