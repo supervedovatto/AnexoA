@@ -1,6 +1,7 @@
 # Mesoregiões
 library(readxl)
 library(data.table)
+library(dplyr)
 Meso <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "MesorregiõesIBGE"))
 colnames(Meso) <- c("Mesorregiao","Microrregiao")
 Meso$Mesorregiao <- factor(Meso$Mesorregiao)
@@ -157,7 +158,8 @@ SalasExistentes <- melt(SalasExistentes,id.vars = c("Localidade","Ano"),variable
 SalasUtilizadas <- melt(SalasUtilizadas,id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Salas Utilizadas")
 EstabelecimentosESalas <- Estabelecimentos %>% 
   merge(SalasExistentes,by=c("Localidade","Ano","Rede"),all = TRUE) %>% 
-  merge(SalasUtilizadas,by=c("Localidade","Ano","Rede"),all = TRUE)
+  merge(SalasUtilizadas,by=c("Localidade","Ano","Rede"),all = TRUE) %>% 
+  merge(RegioesGoias,by=c("Localidade"),all = TRUE)
 
 #Matrículas
 Matrículas <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Matrículas"))
