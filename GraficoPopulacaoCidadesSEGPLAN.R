@@ -14,7 +14,7 @@ outras <- SEGPLAN.Populacao %>%
             Populacao = sum(Populacao),
             freq = sum(freq))
 
-rbind(maiores,outras) %>% 
+grafico <- rbind(maiores,outras) %>% 
   arrange(desc(Localidade)) %>%
   mutate(ypos = cumsum(freq)-freq/2) %>% 
   ggplot(aes(x=2,y=freq,fill=Localidade)) +
