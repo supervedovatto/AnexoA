@@ -1,3 +1,5 @@
+load(file = "Dados/POCV.RData")
+
 SEGPLAN.Populacao <- PopulacaoProjecao %>% 
   filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano == AnoRef) %>% 
   group_by(Localidade) %>% 
