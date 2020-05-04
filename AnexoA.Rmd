@@ -179,6 +179,11 @@ source(file = "GraficoDocentesHabitantes.R")
 grafico
 ```
 
+```{r,fig.cap=paste("Número de estabelescimentos de ensino em",LocRef$Localidade,"nas redes federal, estatual, municipal e particular.")}
+source(file = "GraficoEstabelescimentos.R")
+grafico
+```
+
 Corresponde ao total de pessoas em atividades docentes em sala de aula no ensino pré-escolar, no ensino fundamental e no ensino médio.
 O mesmo docente pode ministrar aulas em redes e municípios diferentes.
 Os dados são referentes à `r max(Docentes$Ano)`.
