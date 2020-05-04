@@ -1,0 +1,210 @@
+---
+title: "Anexo A"
+subtitle: "Relatório de Estudo/Pesquisa Natural, Social, Econômica e Educacional dos Municípios e das Regiões de Influência dos Campus do IFG"
+author: "Observatório do Mundo do Trabalho - Campus Goiânia"
+documentclass: book
+date: "`r format(Sys.time(), '%d de %B de %Y')`"
+output:
+  pdf_document:
+header-includes:
+- \usepackage[brazil]{babel}
+- \usepackage{geometry} 
+- \geometry{ a4paper, inner=20mm, top=20mm, outer=20mm, bottom=20mm }
+fontsize: 11pt
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_packages, include=FALSE, warning=FALSE}
+library(dplyr)
+library(reshape2)
+library(data.table)
+library(ggplot2)
+library(ggthemes)
+library(extrafont)
+library(knitr)
+library(scales)
+```
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      fig.align = 'center',
+                      fig.asp = 0.618,
+                      warning = FALSE)
+
+rm(list = ls())
+
+options(scipen=10000)
+
+#Para que o relatório seja gerado basta informar a cidade e o ano de referẽncia abaixo.
+#Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
+
+#Carrega todos os banco de dados necessários
+load(file = "Dados/BDE.RData")
+
+#Para que o relatório seja gerado basta informar a cidade e o ano de referẽncia abaixo.
+#Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
+Municipio <- "Goiânia"
+AnoRef <- 2020
+
+source(file = "AnaliseDadosBasicos.R")
+
+myformat <- function(x) format(x,big.mark=".",decimal.mark=",",scientific=FALSE)
+
+save.image(file = "Dados/POCV.RData")
+```
+
+# Apresentação
+
+Nesse relatório fazemos alguns estudos complementares ao que já se encontra disponível nos sites:
+
+  - [Atlas Brasil - Região Metropolitana de Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_rm/goiania)
+  - [Atlas Brasil - Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_m/goiania_go)
+  
+## O Estudo
+
+O estudo que se segue utiliza como base os dados da plataforma Instituto Mauro Borges.
+
+## Características do Município de `r LocRef$Localicade`
+
+A cidade de `r LocRef$Localidade` possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoLocal)` habitantes e uma área territorial de `r myformat(AreaLocal)` km², deste modo a densidade populacional atual fica projetada em `r myformat(PopulacaoLocal/AreaLocal)` hab/km².
+A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificação do IBGE, na *Mesorregião `r LocRef$Mesorregiao`* e na *Microrregião de `r LocRef$Microrregiao`* e segundo a SEGPLAN na *Região de Planejamento `r LocRef$RPSEGPLAN`*.
+
+### Mesorregião `r LocRef$Mesorregiao`
+
+```{r}
+source(file = "AnaliseMesorregiao.R")
+```
+
+A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
+Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
+
+```{r,fig.cap=paste("Percentual da população em cada Microrregião do",LocRef$Mesorregiao)}
+source(file = "GraficoPopulacaoMicrorregiao.R")
+grafico
+```
+
+```{r}
+source(file = "TabelaPopulacaoMicrorregiao.R")
+tabela
+```
+
+```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
+source(file = "GraficoMunicipiosMicrorregioes.R")
+grafico
+```
+
+### Microrregião de `r LocRef$Microrregiao`
+
+```{r}
+source(file = "AnaliseMicrorregiao.R")
+```
+
+A *Microrregião de `r LocRef$Microrregiao`*, possui em `r AnoRef` uma população projetada em `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r length(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
+Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
+
+```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
+source(file = "GraficoPopulacaoMicrorregiao.R")
+```
+
+```{r}
+source(file = "TabelaPopulacaoMicrorregiao.R")
+tabela
+```
+
+### Região de Planejamento `r LocRef$RPSEGPLAN`
+
+```{r}
+source(file = "AnaliseRegiaoPlanejamento.R")
+```
+
+A *Região de Planejamento `r LocRef$RPSEGPLAN`*, definida pela SEGPLAN, compreende um total `r nrow(LocalSEGPLAN)` cidades sendo as cinco cidades mais populosas `r head(RPSEGPLANPop$Localidade)`.
+Os municípios menos populosos são `r tail(RPSEGPLANPop$Localidade)`.
+A população da *Região de Planejamento `r LocRef$RPSEGPLAN`* em `r AnoRef` é projetada em `r myformat(PopulacaoSEGPLAN)` habitantes e sua área territorial é `r myformat(AreaSEGPLAN)` km².
+
+```{r}
+source(file = "TabelaPopulacaoRPSEGPLAN.R")
+tabela
+```
+
+```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
+source(file = "GraficoPopulacaoSEGPLAN.R")
+grafico
+```
+
+Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
+
+```{r}
+source(file = "TabelaPopulacaoCidadesRPSEGPLAN.R")
+tabela
+```
+
+Na figura a seguir temos mais informações
+
+```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
+source(file = "GraficoPopulacaoCidadesSEGPLAN.R")
+grafico
+```
+
+A pirâmide etária da cidade de goiânia baseada na população projetada para 2020 é apresentada no gráfico à seguir:
+
+```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
+source(file = "GraficoPiramideEtaria.R")
+grafico
+```
+
+# Aspectos Econômicos
+
+## Painel das Profissões
+
+## Caracterização Geral das Profissões no Município
+
+### IDM - Educação
+
+## Caracterização  dos Vínculos Empregatícios
+
+# Aspectos Demográficos e Afins
+
+```{r,fig.cap=paste("Percentual da população atendida por serviços de água e esgoto em",LocRef$Localidade )}
+source(file = "GraficoAguaEsgoto.R")
+grafico
+```
+
+## Densidade Demográfica
+
+# Aspectos Educacionais
+
+```{r,fig.cap=paste("Número de docentes nas redes municipal, estadual, federal e particular atuando nos ensinos pré-escolar, fundamental e médio em",LocRef$Localidade,"para cada 100 mil habitantes.")}
+source(file = "GraficoDocentesHabitantes.R")
+grafico
+```
+
+Corresponde ao total de pessoas em atividades docentes em sala de aula no ensino pré-escolar, no ensino fundamental e no ensino médio.
+O mesmo docente pode ministrar aulas em redes e municípios diferentes.
+Os dados são referentes à `r max(Docentes$Ano)`.
+```{r}
+# Docentes %>% 
+#   filter(Microrregiao == LocRef$Microrregiao & Ano == max(Docentes$Ano)) %>% 
+#   dcast(Localidade~Rede,value.var = "Quantidade") %>%
+#   kable(caption = paste("Quantidade de docentes atuando em", LocRef,"nos ensinos pré-escolar, fundamental e médio nas diferentes redes de ensino."))
+```
+
+## Dados Institucionais: Atuação do Câmpus no seu território
+
+### Ações de Ensino
+
+### Ações de Pesquisa
+
+### Ações de Extensão
+
+## Dados da Pesquisa Institucional de Acompanhamento de Egressos
+
+# Pesquisa de Campo
+
+# Arranjos Produtivos, Sociais e Culturais
+
+# Escuta da Comunidade
+
+# Considerações Finais
+
+# Referências Bibliográficas
