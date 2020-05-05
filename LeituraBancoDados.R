@@ -1,3 +1,5 @@
+rm(list = ls())
+
 # Mesoregiões
 library(readxl)
 library(data.table)
