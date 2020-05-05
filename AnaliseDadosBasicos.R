@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 LocRef <- RegioesGoias %>% 
   filter(Localidade == Municipio)
 
