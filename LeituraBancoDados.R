@@ -83,6 +83,17 @@ rm(Feminina,Masculina)
 PopulacaoProjecao <- melt(data = PopulacaoProjecao,id.vars = c("Localidade","Ano","Sexo"),variable.name = "Faixa",value.name = "Quantidade")
 PopulacaoProjecao <- merge(x = RegioesGoias,y = PopulacaoProjecao,by=c("Localidade"), all = TRUE)
 PopulacaoProjecao$Faixa <- factor(PopulacaoProjecao$Faixa,ordered = TRUE)
+PopulacaoProjecao$FaseVida <- NA
+P1 <- PopulacaoProjecao %>% filter(Faixa %in% c("30 a 39","20 a 29","40 a 49","50 a 59")) %>% mutate(FaseVida = "Adultos")
+P2 <- PopulacaoProjecao %>% filter(Faixa %in% c("15 a 19")) %>% mutate(FaseVida = "Jovens")
+P3 <- PopulacaoProjecao %>% filter(Faixa %in% c("10 a 14")) %>% mutate(FaseVida = "Adolescentes")
+P4 <- PopulacaoProjecao %>% filter(Faixa %in% c("0 a 4","5 a 9")) %>% mutate(FaseVida = "Crianças")
+P5 <- PopulacaoProjecao %>% filter(Faixa %in% c("60 a 69","70 a 79","80 ou mais")) %>%  mutate(FaseVida = "Idosos")
+PopulacaoProjecao <- rbind(P1,P2,P3,P4,P5)
+PopulacaoProjecao$FaseVida <- factor(PopulacaoProjecao$FaseVida,
+                                     ordered = TRUE,
+                                     levels = c("Crianças","Adolescentes","Jovens","Adultos","Idosos"))
+
 
 # Abastacimento de Agua e Esgoto
 AtendimentoAgua <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Abastecimento de Água"))
