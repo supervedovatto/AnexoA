@@ -70,6 +70,32 @@ O estudo que se segue utiliza como base os dados da plataforma Instituto Mauro B
 A cidade de `r LocRef$Localidade` possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoLocal)` habitantes e uma área territorial de `r myformat(AreaLocal)` km², deste modo a densidade populacional atual fica projetada em `r myformat(PopulacaoLocal/AreaLocal)` hab/km².
 A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificação do IBGE, na *Mesorregião `r LocRef$Mesorregiao`* e na *Microrregião de `r LocRef$Microrregiao`* e segundo a SEGPLAN na *Região de Planejamento `r LocRef$RPSEGPLAN`*.
 
+# Aspectos Econômicos
+
+## Painel das Profissões
+
+## Caracterização Geral das Profissões no Município
+
+### IDM - Educação
+
+## Caracterização  dos Vínculos Empregatícios
+
+# Aspectos Demográficos e Afins
+
+```{r,fig.cap=paste("Percentual da população atendida por serviços de água e esgoto em",LocRef$Localidade)}
+source(file = "GraficoAguaEsgoto.R")
+grafico
+```
+
+A pirâmide etária da cidade de goiânia baseada na população projetada para 2020 é apresentada no gráfico à seguir:
+
+```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
+source(file = "GraficoPiramideEtaria.R")
+grafico
+```
+
+## Densidade Demográfica
+
 ### Mesorregião `r LocRef$Mesorregiao`
 
 ```{r}
@@ -139,42 +165,14 @@ source(file = "TabelaPopulacaoCidadesRPSEGPLAN.R")
 tabela
 ```
 
-Na figura a seguir temos mais informações
-
 ```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
 source(file = "GraficoPopulacaoCidadesSEGPLAN.R")
 grafico
 ```
 
-# Aspectos Econômicos
-
-## Painel das Profissões
-
-## Caracterização Geral das Profissões no Município
-
-### IDM - Educação
-
-## Caracterização  dos Vínculos Empregatícios
-
-# Aspectos Demográficos e Afins
-
-```{r,fig.cap=paste("Percentual da população atendida por serviços de água e esgoto em",LocRef$Localidade )}
-source(file = "GraficoAguaEsgoto.R")
-grafico
-```
-
-A pirâmide etária da cidade de goiânia baseada na população projetada para 2020 é apresentada no gráfico à seguir:
-
-```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
-source(file = "GraficoPiramideEtaria.R")
-grafico
-```
-
-## Densidade Demográfica
-
 # Aspectos Educacionais
 
-```{r,fig.cap=paste("Número de estabelescimentos de ensino em",LocRef$Localidade,"por rede de ensino.")}
+```{r,fig.cap=paste("Número de estabelescimentos de ensino em",LocRef$Localidade,"por rede de ensino nos últimos anos")}
 source(file = "GraficoEstabelescimentos.R")
 grafico
 ```
@@ -187,6 +185,20 @@ source(file = "GraficoDocentesHabitantes.R")
 grafico
 ```
 
+```{r,fig.cap=paste("Percentual de utilização das salas de aula disponíveis em",LocRef$Localidade,"nos últimos anos")}
+source(file = "GraficoUtilizacaoSalas.R")
+grafico
+```
+
+```{r}
+source(file = "TabelaUtilizacaoSalasProporcao.R")
+tabela
+```
+
+```{r}
+source(file = "TabelaSalasExistentes.R")
+tabela
+```
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
 
