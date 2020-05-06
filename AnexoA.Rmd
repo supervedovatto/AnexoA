@@ -87,8 +87,13 @@ A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificaç
 ## Caracterização Geral das Profissões no Município
 
 ```{r}
-source(file = "TabelaEmpregosCAGED-1.R")
+source(file = "TabelaEmpregosCAGED.R")
 tabela
+```
+
+```{r,fig.cap=paste("Admitidos e Desligados por setor nos últimos 10 anos na Região de Planejamento",LocRef$RPSEGPLAN,"segundo dados da CAGED."),fig.asp = 1.618}
+source(file = "GraficoEmpregosCAGED.R")
+grafico
 ```
 
 ### IDM - Educação
