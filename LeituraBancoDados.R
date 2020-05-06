@@ -180,4 +180,4 @@ TaxaReprovação <- merge(x = RegioesGoias,y = TaxaReprovação,by=c("Localidade
 
 rm(LocalAno,Meso,Micro,MesoMicro,SEGPLAN)
 
-save.image(file = "BDE.RData")
+save.image(file = "Dados/BDE.RData")
