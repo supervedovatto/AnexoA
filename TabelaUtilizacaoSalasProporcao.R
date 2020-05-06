@@ -1,7 +1,6 @@
 load(file = "Dados/POCV.RData")
 
 tabela <- EstabelecimentosESalas %>% 
-  merge(RegioesGoias,by = "Localidade") %>% 
   filter(Microrregiao == LocRef$Microrregiao & Ano == max(EstabelecimentosESalas$Ano)) %>%
   mutate(TaxaUso = 100*`Salas Utilizadas`/`Salas Existentes`) %>% 
   select(Localidade,Rede,TaxaUso) %>%
