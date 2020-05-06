@@ -24,6 +24,7 @@ library(ggthemes)
 library(extrafont)
 library(knitr)
 library(scales)
+library(janitor)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -47,7 +48,16 @@ load(file = "Dados/BDE.RData")
 Municipio <- "Goiânia"
 AnoRef <- 2020
 
-source(file = "AnaliseDadosBasicos.R")
+LocRef <- RegioesGoias %>% 
+  filter(Localidade == Municipio)
+
+PopulacaoLocal <- PopulacaoProjecao %>%
+    filter(Ano == AnoRef & Localidade == LocRef$Localidade) %>%
+    summarise(Populacao = sum(Quantidade))
+
+AreaLocal <- Area %>%
+    filter(Ano == max(Area$Ano) & Localidade == LocRef$Localidade) %>%
+    summarise(Area = sum(AreaTerritorial))
 
 myformat <- function(x) format(x,big.mark=".",decimal.mark=",",scientific=FALSE)
 
@@ -75,6 +85,11 @@ A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificaç
 ## Painel das Profissões
 
 ## Caracterização Geral das Profissões no Município
+
+```{r}
+source(file = "TabelaEmpregosCAGED-1.R")
+tabela
+```
 
 ### IDM - Educação
 
@@ -172,7 +187,7 @@ grafico
 
 # Aspectos Educacionais
 
-```{r,fig.cap=paste("Número de estabelescimentos de ensino em",LocRef$Localidade,"por rede de ensino nos últimos anos")}
+```{r,fig.cap=paste("Número de estabelescimentos de ensino infantil, fundamental e médio em",LocRef$Localidade,"por rede de ensino nos últimos anos")}
 source(file = "GraficoEstabelescimentos.R")
 grafico
 ```
