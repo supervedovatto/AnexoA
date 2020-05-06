@@ -14,4 +14,3 @@ grafico <-  ggplot(data = dados,aes(x = Ano, y = TaxaUso)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = 2)) +
     theme_minimal() +
     theme(legend.position="bottom",axis.text.x = element_text(angle = 90))
-
