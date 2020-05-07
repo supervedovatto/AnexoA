@@ -14,6 +14,4 @@ tabela <- PopulacaoProjecao %>%
   mutate(ypos = cumsum(freq)-freq/2) %>% 
   select(RPSEGPLAN,Populacao) %>% 
   merge(SEGPLAN.Areas,by = "RPSEGPLAN") %>% 
-  mutate(densidade = round(Populacao/Area,digits = 2)) %>% 
-  kable(col.names = c("Região de Planejamento","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-        caption = "Densidade populacional em cada região de planejamento definida pela SEGPLAN")
+  mutate(densidade = round(Populacao/Area,digits = 2))

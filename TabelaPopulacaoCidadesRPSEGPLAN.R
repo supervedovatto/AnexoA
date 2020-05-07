@@ -13,6 +13,4 @@ tabela <- PopulacaoProjecao %>%
   mutate(freq = Populacao/sum(Populacao)) %>%
   merge(SEGPLAN.Areas,by = "Localidade") %>% 
   mutate(densidade = round(Populacao/Area,digits = 2)) %>% 
-  select(Localidade,Populacao,Area,densidade) %>% 
-  kable(col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade populacional em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN))
+  select(Localidade,Populacao,Area,densidade)

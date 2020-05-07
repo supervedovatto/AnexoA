@@ -6,6 +6,4 @@ tabela <- EstabelecimentosESalas %>%
   select(Localidade,Rede,TaxaUso) %>%
   filter(!is.na(TaxaUso)) %>% 
   reshape2::dcast(Localidade ~ Rede,sum,value.var="TaxaUso") %>% 
-  format(big.mark=".",decimal.mark=",",scientific=FALSE,digits = 3) %>%
-  kable(col.names = c("Cidade","Federal (%)","Estadual (%)","Municipal (%)","Particular (%)"),
-        caption = paste("Percentual de utilização das salas de aula nas cidades da Região de Planejamento",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano),"nas diferentes redes de ensino"))
+  format(big.mark=".",decimal.mark=",",scientific=FALSE,digits = 3)
