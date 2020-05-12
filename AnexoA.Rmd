@@ -25,6 +25,7 @@ library(extrafont)
 library(knitr)
 library(scales)
 library(janitor)
+library(kableExtra)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -88,12 +89,34 @@ A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificaç
 
 ```{r}
 source(file = "TabelaEmpregosCAGED.R")
-tabela
+tabela %>% 
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Saldo acumulado da geração de empregos por setor entre",max(Emprego$Ano)-5,"e",max(Emprego$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a CAGED")) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ```{r,fig.cap=paste("Admitidos e Desligados por setor nos últimos 10 anos na Região de Planejamento",LocRef$RPSEGPLAN,"segundo dados da CAGED."),fig.asp = 1.618}
 source(file = "GraficoEmpregosCAGED.R")
 grafico
+```
+Segundo a Relação Anual das Informações Sociais (RAIS) elaborada pelo Ministério do Trabalho e Emprego (MTE), o número de empregos (postos de trabalho) corresponde ao total de vínculos empregatícios ativos, é diferente do número de pessoas empregadas, pois um mesmo indivíduo pode estar ocupando mais de um posto de trabalho na data de referência.
+Como vínculo empregatício entende-se a relação de emprego mantida com o empregador durante o ano-base e que se estabelece sempre que ocorrer trabalho remunerado com submissão hierárquica ao empregador e horário pré estabelecido por este.
+Esta relação pode ser regida pela Consolidação das Leis do Trabalho (CLT) ou pelo Regime Jurídico Único, no caso de empregado estatutário.
+Adicionalmente a RAIS levanta dados sobre vínculos de trabalhador avulso, trabalhador temporário (Lei nº 6.019, de 03/01/74), menor aprendiz, diretor sem vínculo que tenha optado por recolhimento do FGTS e trabalhador com contrato de trabalho por prazo determinado (Lei nº 9.601, de 21/01/98).
+
+O total de empregos a soma do número de empregos nos setores: *`r head(levels(Emprego$Setor),-1)`* e *`r tail(levels(Emprego$Setor),1)`*.
+
+```{r, results='asis'}
+source(file = "TabelaEmpregosRAIS.R")
+tabela %>%
+  mutate_all(linebreak) %>%
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Saldo acumulado da geração de empregos por setor, entre",max(EmpregoRAIS$Ano)-5,"e",max(EmpregoRAIS$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a RAIS")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  column_spec(1, width = "35em") %>% 
+  kableExtra::landscape()
 ```
 
 ### IDM - Educação
@@ -125,14 +148,19 @@ source(file = "AnaliseMesorregiao.R")
 A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
 Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
 
-```{r,fig.cap=paste("Percentual da população em cada Microrregião do",LocRef$Mesorregiao)}
-source(file = "GraficoPopulacaoMicrorregiao.R")
+```{r,fig.cap=paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao)}
+source(file = "GraficoPopulacaoMesorregiao.R")
 grafico
 ```
 
 ```{r}
-source(file = "TabelaPopulacaoMicrorregiao.R")
-tabela
+source(file = "TabelaPopulacaoMesoregiao.R")
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Microrregião","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = paste("Densidade Populacional da Mesorregião de",LocRef$Mesorregiao)) %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
@@ -155,7 +183,12 @@ source(file = "GraficoPopulacaoMicrorregiao.R")
 
 ```{r}
 source(file = "TabelaPopulacaoMicrorregiao.R")
-tabela
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = paste("Densidade Populacional da Microrregião de",LocRef$Microrregiao)) %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ### Região de Planejamento `r LocRef$RPSEGPLAN`
@@ -170,7 +203,12 @@ A população da *Região de Planejamento `r LocRef$RPSEGPLAN`* em `r AnoRef` é
 
 ```{r}
 source(file = "TabelaPopulacaoRPSEGPLAN.R")
-tabela
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Região de Planejamento","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = "Densidade populacional em cada região de planejamento definida pela SEGPLAN") %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
@@ -182,7 +220,12 @@ Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
 
 ```{r}
 source(file = "TabelaPopulacaoCidadesRPSEGPLAN.R")
-tabela
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = paste("Densidade populacional em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)) %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
@@ -212,12 +255,22 @@ grafico
 
 ```{r}
 source(file = "TabelaUtilizacaoSalasProporcao.R")
-tabela
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Cidade","Federal (%)","Estadual (%)","Municipal (%)","Particular (%)"),
+      caption = paste("Percentual de utilização das salas de aula nas cidades da Região de Planejamento",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano),"nas diferentes redes de ensino")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ```{r}
 source(file = "TabelaSalasExistentes.R")
-tabela
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Município","Federal","Estadual","Municipal","Particular","Total"),
+      caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano))) %>% 
+  kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
