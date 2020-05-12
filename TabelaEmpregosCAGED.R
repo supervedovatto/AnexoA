@@ -1,6 +1,8 @@
 load(file = "Dados/POCV.RData")
 
-tabela <- EmpregoCAGED %>% 
-  filter(!is.na(Quantidade) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= max(EmpregoCAGED$Ano)-5) %>% 
-  reshape2::dcast(formula = Setor~Situacao,value.var = "Quantidade",fun.aggregate = sum) %>% 
+tabela <- Emprego %>% 
+  filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= max(Emprego$Ano)-5) %>% 
+  select(Setor, Admitidos, Desligados) %>% 
+  group_by(Setor) %>% 
+  summarise(Admitidos = sum(Admitidos,na.rm = TRUE),Desligados = sum(Desligados,na.rm = TRUE)) %>% 
   mutate(Saldo = Admitidos - Desligados)

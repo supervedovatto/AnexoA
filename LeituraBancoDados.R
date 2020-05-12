@@ -42,29 +42,44 @@ TaxaAlfabetizacao <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Taxa d
 TaxaAlfabetizacao$Localidade <- factor(TaxaAlfabetizacao$Localidade)
 TaxaAlfabetizacao <- merge(RegioesGoias,TaxaAlfabetizacao,by = "Localidade",all = TRUE)
 
-# Emprego CAGED
-EmpregoCAGED <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - CAGED"))
-EmpregoCAGED$Localidade <- factor(EmpregoCAGED$Localidade)
-LocalAno <- select(EmpregoCAGED, -ends_with(c("Admitidos","Desligados")))
-Admitidos <- select(EmpregoCAGED, ends_with("Admitidos"))
-EmpregoLista <- sub(pattern = " Admitidos",replacement = "",colnames(Admitidos))
-colnames(Admitidos) <- EmpregoLista
-Admitidos <- cbind(LocalAno,Admitidos)
-Admitidos$Situacao <- factor("Admitidos")
-Desligados <- select(EmpregoCAGED, ends_with("Desligados"))
-colnames(Desligados) <- EmpregoLista
-Desligados$Situacao <- factor("Desligados")
-Desligados <- cbind(LocalAno,Desligados)
-EmpregoCAGED <- rbind(Admitidos,Desligados)
-rm(Admitidos,Desligados)
-EmpregoCAGED$Total <- NULL
-EmpregoCAGED <- melt(data = EmpregoCAGED,id.vars = c("Localidade","Ano","Situacao"),variable.name = "Setor",value.name = "Quantidade")
-EmpregoCAGED <- merge(x = RegioesGoias,y = EmpregoCAGED,by=c("Localidade"), all = TRUE)
+# Emprego - CAGED - Admitidos
+AdmitidosCAGED <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - CAGED - Admitidos"))
+AdmitidosCAGED$Localidade <- factor(AdmitidosCAGED$Localidade)
+AdmitidosCAGED$Total <- NULL
+AdmitidosCAGED <- melt(data = AdmitidosCAGED,id.vars = c("Localidade","Ano"),variable.name = "Setor",value.name = "Admitidos")
 
-# Emprego RAIS
-EmpregoRAIS <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS"))
+# Emprego - CAGED - Desligados
+DesligadosCAGED <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - CAGED - Desligados"))
+DesligadosCAGED$Localidade <- factor(DesligadosCAGED$Localidade)
+DesligadosCAGED$Total <- NULL
+DesligadosCAGED <- melt(data = DesligadosCAGED,id.vars = c("Localidade","Ano"),variable.name = "Setor",value.name = "Desligados")
+
+# Dados CAGED
+CAGED <- merge(AdmitidosCAGED,DesligadosCAGED)
+
+# Emprego - RAIS - Setores
+EmpregoRAIS <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Setores"))
+EmpregoRAIS$Total <- NULL
 EmpregoRAIS$Localidade <- factor(EmpregoRAIS$Localidade)
-EmpregoRAIS <- merge(x = RegioesGoias,y = EmpregoRAIS,by=c("Localidade"),all = TRUE)
+EmpregoRAIS <- EmpregoRAIS %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),
+                 variable.name="Setor",
+                 value.name="Empregos")
+
+# Rendimento - RAIS - Setores
+RendimentoRAIS <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Rendimento - RAIS -  Setores"))
+RendimentoRAIS$`Rendimento Médio` <- NULL
+RendimentoRAIS$Localidade <- factor(RendimentoRAIS$Localidade)
+RendimentoRAIS <- RendimentoRAIS %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),
+                 variable.name="Setor",
+                 value.name="Rendimento Médio")
+
+# Rendimento + Empregos RAIS - Setores
+RAIS <- merge(x = EmpregoRAIS,y = RendimentoRAIS)
+
+Emprego <- merge(CAGED,RAIS,by = c("Localidade","Ano","Setor"),all = TRUE) %>% 
+  merge(RegioesGoias)
 
 # Projeçao Projeçao
 PopulacaoProjecao <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "PopulacaoProjeção"))
@@ -189,6 +204,6 @@ TaxaReprovação <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Taxa de
 TaxaReprovação$Localidade <- factor(TaxaReprovação$Localidade)
 TaxaReprovação <- merge(x = RegioesGoias,y = TaxaReprovação,by=c("Localidade"),all = TRUE)
 
-rm(LocalAno,Meso,Micro,MesoMicro,SEGPLAN)
+rm(LocalAno,Meso,Micro,MesoMicro,SEGPLAN,P1,P2,P3,P4,P5,FaixasEtarias)
 
 save.image(file = "Dados/BDE.RData")
