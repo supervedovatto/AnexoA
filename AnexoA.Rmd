@@ -92,8 +92,9 @@ source(file = "TabelaEmpregosCAGED.R")
 tabela %>% 
   kable(format = "latex",
         booktabs = TRUE,
-        caption = paste("Saldo acumulado da geração de empregos por setor entre",max(Emprego$Ano)-5,"e",max(Emprego$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a CAGED")) %>%
-  kable_styling(latex_options = c("striped", "hold_position"))
+        caption = paste("Saldo acumulado da geração de empregos por setor entre",max(Emprego$Ano)-5,"e",max(Emprego$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a CAGED.")) %>%
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  column_spec(1, width = "25em")
 ```
 
 ```{r,fig.cap=paste("Admitidos e Desligados por setor nos últimos 10 anos na Região de Planejamento",LocRef$RPSEGPLAN,"segundo dados da CAGED."),fig.asp = 1.618}
@@ -108,15 +109,66 @@ Adicionalmente a RAIS levanta dados sobre vínculos de trabalhador avulso, traba
 O total de empregos a soma do número de empregos nos setores: *`r head(levels(Emprego$Setor),-1)`* e *`r tail(levels(Emprego$Setor),1)`*.
 
 ```{r, results='asis'}
-source(file = "TabelaEmpregosRAIS.R")
+source(file = "TabelaEmpregosRAIS-1.R")
 tabela %>%
   mutate_all(linebreak) %>%
   kable(format = "latex",
         booktabs = TRUE,
-        caption = paste("Saldo acumulado da geração de empregos por setor, entre",max(EmpregoRAIS$Ano)-5,"e",max(EmpregoRAIS$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a RAIS")) %>% 
+        caption = paste("Total de empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "35em") %>% 
-  kableExtra::landscape()
+  column_spec(1, width = "20em")
+```
+
+O Rendimento médio do Setor no municipio de Goiânia pode ser Verificado na tabela à seguir.
+Os dados foram obtidos diretamente da plataforma Mauro Borges.
+
+```{r, results='asis'}
+source(file = "TabelaEmpregosRAIS-2.R")
+tabela %>%
+  mutate_all(linebreak) %>%
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  column_spec(1, width = "20em")
+```
+
+```{r, results='asis'}
+source(file = "TabelaEmpregosRAIS-3.R")
+tabela %>%
+  mutate_all(linebreak) %>%
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"na Região de Planejamento de",LocRef$RPSEGPLAN,"segundo a RAIS.")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  column_spec(1, width = "20em")
+```
+
+```{r, results='asis'}
+source(file = "TabelaEmpregosRAIS-4.R")
+tabela %>%
+  mutate_all(linebreak) %>%
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"em Goiás segundo a RAIS.")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  column_spec(1, width = "20em")
+```
+
+```{r, results='asis'}
+source(file = "TabelaEmpregosRAIS-4.R")
+tabela %>%
+  mutate_all(linebreak) %>%
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"em Goiás segundo a RAIS.")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  column_spec(1, width = "20em")
+```
+
+```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+source(file = "GraficoRendimentoMedioRAIS.R")
+grafico
 ```
 
 ### IDM - Educação
