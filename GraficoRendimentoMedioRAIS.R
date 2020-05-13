@@ -1,12 +1,12 @@
 load(file = "Dados/POCV.RData")
 
 tabela1 <- Emprego %>% 
-  filter(!is.na(`Rendimento Médio`) & Localidade == LocRef$Localidade & Ano >= max(EmpregoRAIS$Ano)-8) %>% 
+  filter(!is.na(`Rendimento Médio`) & Localidade == LocRef$Localidade & Ano >= max(EmpregoRAIS$Ano)-10) %>% 
   select(Localidade,Ano, Setor,`Rendimento Médio`) %>% 
   data.table()
 
 tabela2 <- Emprego %>% 
-  filter(!is.na(`Rendimento Médio`) & !is.na(Empregos) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= max(EmpregoRAIS$Ano)-8) %>% 
+  filter(!is.na(`Rendimento Médio`) & !is.na(Empregos) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= max(EmpregoRAIS$Ano)-10) %>% 
   select(RPSEGPLAN,Ano, Setor,`Rendimento Médio`,Empregos) %>% 
   mutate(RendaTotal=`Rendimento Médio`*Empregos) %>% 
   select(RPSEGPLAN,Ano, Setor,Empregos,RendaTotal) %>% 
@@ -16,7 +16,7 @@ tabela2 <- Emprego %>%
   select(RPSEGPLAN,Ano, Setor,RendimentoMedio)
 
 tabela3 <- Emprego %>% 
-  filter(!is.na(`Rendimento Médio`) & !is.na(Empregos) & Ano >= max(EmpregoRAIS$Ano)-8) %>% 
+  filter(!is.na(`Rendimento Médio`) & !is.na(Empregos) & Ano >= max(EmpregoRAIS$Ano)-10) %>% 
   select(Ano, Setor,`Rendimento Médio`,Empregos) %>% 
   mutate(RendaTotal=`Rendimento Médio`*Empregos) %>% 
   select(Ano, Setor,Empregos,RendaTotal) %>% 
