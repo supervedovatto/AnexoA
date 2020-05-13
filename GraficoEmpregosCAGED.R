@@ -15,7 +15,7 @@ grafico <- dados %>%
     geom_line(aes(color = Situacao), stat="identity") +
     scale_color_brewer(palette="Set2") +
     theme_bw() +
-    theme(legend.position="bottom", axis.text.x = element_text(angle = 90)) +
+    theme(legend.position="bottom", axis.text.x = element_text(angle = 90), strip.text = element_text(size = 6)) +
     scale_x_continuous(breaks = unique(dados$Ano)) +
     labs(y = "Total", x="Ano") +
     facet_wrap(~Setor, ncol = 2)
