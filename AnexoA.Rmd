@@ -6,6 +6,7 @@ documentclass: book
 date: "`r format(Sys.time(), '%d de %B de %Y')`"
 output:
   pdf_document:
+    fig_width: 5.5
 header-includes:
 - \usepackage[brazil]{babel}
 - \usepackage{geometry} 
@@ -97,6 +98,11 @@ tabela %>%
   column_spec(1, width = "25em")
 ```
 
+```{r,fig.cap=paste("Total de postos de trabalho por setor nos últimos anos em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no Município de",LocRef$Localidade,"segundo dados da RAIS."),fig.asp = 1.618}
+source(file = "GraficoEmpregosRAIS.R")
+grafico
+```
+
 ```{r,fig.cap=paste("Admitidos e Desligados por setor nos últimos 10 anos na Região de Planejamento",LocRef$RPSEGPLAN,"segundo dados da CAGED."),fig.asp = 1.618}
 source(file = "GraficoEmpregosCAGED.R")
 grafico
@@ -166,8 +172,14 @@ tabela %>%
   column_spec(1, width = "20em")
 ```
 
-```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
 source(file = "GraficoRendimentoMedioRAIS.R")
+grafico
+```
+
+As taxas para o setor da *Administração Pública Direta e Indireta* são muito pequenas quando comparadas com os demais setores devido à estabilidade no serviço público.
+```{r,fig.cap=paste("Comparativo da taxa de aumento do número de postos de trabalho por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+source(file = "GraficoSaldoRelativoPorVagasCAGEDxRAIS.R")
 grafico
 ```
 
