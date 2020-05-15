@@ -7,7 +7,7 @@ tabela1 <- Emprego %>%
   select(Localidade,Ano, Setor,Taxa) %>% 
   mutate(Localidade = level1)
 
-level2 <- paste("Região de Planejamento",LocRef$RPSEGPLAN)
+level2 <- paste("RP",LocRef$RPSEGPLAN)
 tabela2 <- Emprego %>% 
   mutate(Saldo = Admitidos - Desligados) %>% 
   filter(!is.na(Saldo) & Empregos>0 & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= 2011) %>% 
@@ -16,7 +16,7 @@ tabela2 <- Emprego %>%
   mutate(Taxa = Saldo/Empregos,Referencia = level2) %>% 
   select(Referencia,Ano, Setor,Taxa)
 
-level3 <- paste("Estado de Goiás")
+level3 <- paste("Goiás")
 tabela3 <- Emprego %>% 
   mutate(Saldo = Admitidos - Desligados) %>% 
   filter(!is.na(Saldo) & Empregos>0 & Ano >= 2011) %>% 
@@ -44,7 +44,7 @@ grafico <- dados %>%
         axis.text.x = element_text(angle = 90),
         strip.text = element_text(size = 6),
         legend.title = element_blank(),
-        legend.direction = "vertical") +
+        legend.direction = "horizontal") +
   scale_x_continuous(breaks = unique(dados$Ano)) +
   labs(y = "Taxa de Aumento de Postos de Trabalho", x=NULL) +
   facet_wrap(~Setor, ncol = 2,scales = "free_y")
