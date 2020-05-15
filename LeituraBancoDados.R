@@ -81,6 +81,31 @@ RAIS <- merge(x = EmpregoRAIS,y = RendimentoRAIS)
 Emprego <- merge(CAGED,RAIS,by = c("Localidade","Ano","Setor"),all = TRUE) %>% 
   merge(RegioesGoias)
 
+# Emprego - RAIS - Comércio
+ComercioRAIS <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Comércio"))
+ComercioRAIS$Localidade <- factor(ComercioRAIS$Localidade)
+ComercioRAIS <- ComercioRAIS %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),
+                 variable.name="Subsetor",
+                 value.name="Vagas")
+
+# Emprego - RAIS - Serviços
+ServicosRAIS <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Serviços"))
+ServicosRAIS$Localidade <- factor(ServicosRAIS$Localidade)
+ServicosRAIS <- ServicosRAIS %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),
+                 variable.name="Subsetor",
+                 value.name="Vagas")
+
+# Emprego - RAIS - Indústria de Transformação
+TransformacaoRAIS <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Indústria de Transformação"))
+TransformacaoRAIS$Localidade <- factor(TransformacaoRAIS$Localidade)
+TransformacaoRAIS <- TransformacaoRAIS %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),
+                 variable.name="Subsetor",
+                 value.name="Vagas")
+
+
 # Projeçao Projeçao
 PopulacaoProjecao <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "PopulacaoProjeção"))
 PopulacaoProjecao$Localidade <- factor(PopulacaoProjecao$Localidade)
