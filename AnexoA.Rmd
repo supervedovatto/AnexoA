@@ -17,10 +17,8 @@ editor_options:
 ---
 
 ```{r load_packages, include=FALSE, warning=FALSE}
-library(dplyr)
+library(tidyverse)
 library(reshape2)
-library(data.table)
-library(ggplot2)
 library(ggthemes)
 library(extrafont)
 library(knitr)
@@ -182,6 +180,17 @@ As taxas para o setor da *Administração Pública Direta e Indireta* são muito
 source(file = "GraficoSaldoRelativoPorVagasCAGEDxRAIS.R")
 grafico
 ```
+
+```{r,fig.cap=paste("Número de postos de trabalho nos subsetores do comércio em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+source(file = "GraficoEmpregosRAIS-Comercio.R")
+grafico
+```
+
+```{r,fig.cap=paste("Número de postos de trabalho no comercio varejista para cada posto no atacado em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 0.618}
+source(file = "GraficoEmpregosRAIS-Comercio-2.R")
+grafico
+```
+
 
 ### IDM - Educação
 
