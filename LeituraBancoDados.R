@@ -83,7 +83,7 @@ Emprego <- merge(CAGED,RAIS,by = c("Localidade","Ano","Setor"),all = TRUE) %>%
   merge(RegioesGoias)
 
 # Emprego - RAIS - Comércio
-ComercioRAIS <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Comércio"))
+ComercioRAIS <- tibble(read_delim("Dados/Emprego - RAIS - Comércio.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
 ComercioRAIS$Localidade <- factor(ComercioRAIS$Localidade)
 ComercioRAIS <- ComercioRAIS %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),
