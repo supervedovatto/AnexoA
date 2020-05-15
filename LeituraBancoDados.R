@@ -5,13 +5,13 @@ library(readxl)
 library(tidyverse)
 library(reshape2)
 
-Meso <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "MesorregiõesIBGE"))
+Meso <- tibble(read_delim("Dados/MesorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(Meso) <- c("Mesorregiao","Microrregiao")
 Meso$Mesorregiao <- factor(Meso$Mesorregiao)
 Meso$Microrregiao <- factor(Meso$Microrregiao)
 
 # Microrregiões
-Micro <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "MicrorregiõesIBGE"))
+Micro <- tibble(read_delim("Dados/MicrorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(Micro) <- c("Microrregiao","Localidade")
 Micro$Localidade <- factor(Micro$Localidade)
 Micro$Microrregiao <- factor(Micro$Microrregiao)
@@ -20,7 +20,7 @@ Micro$Microrregiao <- factor(Micro$Microrregiao)
 MesoMicro <- merge(Meso,Micro,by = "Microrregiao",all = TRUE)
 
 # Regiões de PLanejamento SEGPLAN
-SEGPLAN <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "RegiõesSEGPLAN"))
+SEGPLAN <- tibble(read_delim("Dados/RegiõesSEGPLAN.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(SEGPLAN) <- c("RPSEGPLAN","Localidade")
 SEGPLAN$Localidade <- factor(SEGPLAN$Localidade)
 SEGPLAN$RPSEGPLAN <- factor(SEGPLAN$RPSEGPLAN)
@@ -29,7 +29,7 @@ SEGPLAN$RPSEGPLAN <- factor(SEGPLAN$RPSEGPLAN)
 RegioesGoias <- merge(MesoMicro,SEGPLAN,by = "Localidade",all = TRUE)
 
 # Area Territorial
-Area <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Área Territorial"))
+Area <- tibble(read_delim("Dados/Área Territorial.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
 Area$Localidade <- factor(Area$Localidade)
 Area <- merge(RegioesGoias,Area,by = "Localidade",all = TRUE)
 
