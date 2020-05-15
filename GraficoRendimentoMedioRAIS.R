@@ -6,7 +6,7 @@ tabela1 <- Emprego %>%
   select(Localidade,Ano, Setor,`Rendimento Médio`) %>%  
   mutate(Localidade = level1)
 
-level2 <- paste("Região de Planejamento",LocRef$RPSEGPLAN)
+level2 <- paste("RP",LocRef$RPSEGPLAN)
 tabela2 <- Emprego %>% 
   filter(!is.na(`Rendimento Médio`) & !is.na(Empregos) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= max(EmpregoRAIS$Ano)-10) %>% 
   select(RPSEGPLAN,Ano, Setor,`Rendimento Médio`,Empregos) %>% 
@@ -17,7 +17,7 @@ tabela2 <- Emprego %>%
   mutate(RendimentoMedio = RendaTotal/Empregos,Referencia = level2) %>% 
   select(Referencia,Ano, Setor,RendimentoMedio)
 
-level3 <- paste("Estado de Goiás")
+level3 <- paste("Goiás")
 tabela3 <- Emprego %>% 
   filter(!is.na(`Rendimento Médio`) & !is.na(Empregos) & Ano >= max(EmpregoRAIS$Ano)-10) %>% 
   select(Ano, Setor,`Rendimento Médio`,Empregos) %>% 
@@ -46,7 +46,7 @@ grafico <- dados %>%
         axis.text.x = element_text(angle = 90),
         strip.text = element_text(size = 6),
         legend.title = element_blank(),
-        legend.direction = "vertical") +
+        legend.direction = "horizontal") +
   scale_x_continuous(breaks = unique(dados$Ano)) +
   labs(y = "Rendimento Médio", x=NULL) +
   facet_wrap(~Setor, ncol = 2,scales = "free_y")
