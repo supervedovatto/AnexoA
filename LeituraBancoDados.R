@@ -105,7 +105,6 @@ TransformacaoRAIS <- TransformacaoRAIS %>%
                  variable.name="Subsetor",
                  value.name="Vagas")
 
-
 # Projeçao Projeçao
 PopulacaoProjecao <- data.table(read_excel("Dados/IMB-GYN.xlsx", sheet = "PopulacaoProjeção"))
 PopulacaoProjecao$Localidade <- factor(PopulacaoProjecao$Localidade)
