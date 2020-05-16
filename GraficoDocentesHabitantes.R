@@ -11,7 +11,7 @@ dados <- PopulacaoProjecao %>%
 grafico <- dados %>% 
   ggplot(aes(x = Ano, y = DocHab)) + 
     geom_line(aes(color = Rede), size = 1) +
-    scale_color_brewer(palette="Set1") +
+    scale_color_manual(values = mypallete) +
     labs(y = "Docentes para cada 100 mil habitantes",x="Ano") +
     scale_x_continuous(breaks = unique(dados$Ano)) +
     theme_minimal() +

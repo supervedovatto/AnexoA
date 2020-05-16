@@ -21,10 +21,10 @@ grafico <- rbind(maiores,outras) %>%
   mutate(ypos = cumsum(freq)-freq/2) %>% 
   ggplot(aes(x=2,y=freq,fill=Localidade)) +
     geom_bar(stat = "identity") +
-    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=3) +
+    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=3,color = "white") +
     labs(x="", y="",fill = paste("Microrregião de",LocRef$Microrregiao)) +
     coord_polar("y", start=0) +
-    scale_fill_brewer(palette="Set3") +
+    scale_fill_manual(values = mypallete) +
     theme_void() +
     xlim(0.5,2.5)
 

@@ -7,7 +7,7 @@ dados <- AguaEsgoto %>%
 grafico <- dados %>% 
   ggplot(aes(x = Ano, y = Percentual)) + 
     geom_line(aes(color = Servico), size = 1) +
-    scale_color_brewer(palette="Set1") +
+    scale_color_manual(values = mypallete) +
     scale_x_continuous(breaks = unique(dados$Ano)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = 2)) +
     theme_minimal() +

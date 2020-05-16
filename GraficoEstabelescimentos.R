@@ -8,7 +8,7 @@ dados <- EstabelecimentosESalas %>%
 grafico <- dados %>% 
     ggplot(aes(x = Ano, y = Estabelecimentos)) + 
     geom_line(aes(color = Rede), size = 1) +
-    scale_color_brewer(palette="Set1") +
+    scale_color_manual(values = mypallete) +
     scale_x_continuous(breaks = unique(dados$Ano)) +
     theme_minimal() +
     theme(legend.position="bottom",axis.text.x = element_text(angle = 90))

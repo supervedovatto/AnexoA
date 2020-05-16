@@ -25,6 +25,6 @@ grafico <- Piramide %>%
     geom_text(aes(y = ifelse(test = Sexo == "Masculino", yes = (Quantidade + ajuste.coef), no = -(Quantidade + ajuste.coef)),
                   label = scales::percent(Proporcao,decimal.mark = ",",accuracy = 0.1)), size=3) +
     scale_y_continuous(labels = abs, limits = 1.1*max(Piramide$Quantidade) * c(-1,1)) +
-    scale_fill_manual(values=c("#377eb8","#e41a1c")) +
+    scale_fill_manual(values = mypallete) +
     labs(y = "População",x="Faixa etária") +
     facet_wrap(~Ano,ncol = 1)

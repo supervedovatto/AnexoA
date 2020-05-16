@@ -9,7 +9,7 @@ grafico <- PopulacaoProjecao %>%
   mutate(ypos = cumsum(freq)-freq/2) %>% 
   ggplot(aes(x=2,y=freq,fill=Microrregiao)) +
     geom_bar(stat = "identity") +
-    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",")), size=4,color = "white") +
+    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",")), size=4, color = "white") +
     labs(x="", y="",fill = paste("Microrregiões do",LocRef$Mesorregiao)) +
     coord_polar("y", start=0) +
     scale_fill_manual(values = mypallete) +

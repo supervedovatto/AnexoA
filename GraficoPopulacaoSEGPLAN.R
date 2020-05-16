@@ -1,3 +1,5 @@
+load(file = "Dados/POCV.RData")
+
 grafico <- PopulacaoProjecao %>% 
   filter(Ano == AnoRef) %>% 
   group_by(RPSEGPLAN) %>% 
@@ -7,9 +9,9 @@ grafico <- PopulacaoProjecao %>%
   mutate(ypos = cumsum(freq)-freq/2) %>% 
   ggplot(aes(x=2,y=freq,fill=RPSEGPLAN)) +
     geom_bar(stat = "identity") +
-    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=4) +
+    geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=4,color = "white") +
     labs(x="", y="",fill = paste("Região de Planejamento")) +
     coord_polar("y", start=0) +
-    scale_fill_brewer(palette="Set3") +
+    scale_fill_manual(values = mypallete) +
     theme_void() +
     xlim(0.5, 2.5)

@@ -35,7 +35,7 @@ dados$Referencia <- factor(dados$Referencia,ordered = T,levels = c(level1,level2
 grafico <- dados %>% 
   ggplot(aes(x = format(Ano,format="%Y"), y = Vagas)) +
   geom_bar(aes(fill = Subsetor), stat = "identity") +
-  scale_fill_brewer(palette = "Set1") +
+  scale_fill_manual(values = mypallete) +
   theme_bw() +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 90),

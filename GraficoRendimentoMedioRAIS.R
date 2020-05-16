@@ -40,7 +40,7 @@ dados$Referencia <- factor(dados$Referencia,ordered = T,levels = c(level1,level2
 grafico <- dados %>% 
   ggplot(aes(x = Ano, y = RendimentoMedio)) +
   geom_line(aes(color = Referencia), stat="identity",size = 1) +
-  scale_color_brewer(palette="Set1") +
+  scale_color_manual(values = mypallete) +
   theme_bw() +
   theme(legend.position="bottom",
         axis.text.x = element_text(angle = 90),

@@ -31,6 +31,7 @@ RegioesGoias <- merge(MesoMicro,SEGPLAN,by = "Localidade",all = TRUE)
 # Area Territorial
 Area <- tibble(read_delim("Dados/Área Territorial.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
 Area$Localidade <- factor(Area$Localidade)
+Area$Ano <- format(Area$Ano,format="%Y")
 Area <- merge(RegioesGoias,Area,by = "Localidade",all = TRUE)
 
 # Densidade Demográfica
@@ -91,7 +92,7 @@ ComercioRAIS <- ComercioRAIS %>%
                  value.name="Vagas")
 
 # Emprego - RAIS - Serviços
-ServicosRAIS <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Serviços"))
+ServicosRAIS <- tibble(read_delim("Dados/Emprego - RAIS - Serviços.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
 ServicosRAIS$Localidade <- factor(ServicosRAIS$Localidade)
 ServicosRAIS <- ServicosRAIS %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),
@@ -99,7 +100,7 @@ ServicosRAIS <- ServicosRAIS %>%
                  value.name="Vagas")
 
 # Emprego - RAIS - Indústria de Transformação
-TransformacaoRAIS <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - RAIS - Indústria de Transformação"))
+TransformacaoRAIS <- tibble(read_delim("Dados/Emprego - RAIS - Indústria de Transformação.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
 TransformacaoRAIS$Localidade <- factor(TransformacaoRAIS$Localidade)
 TransformacaoRAIS <- TransformacaoRAIS %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),
