@@ -6,7 +6,7 @@ documentclass: book
 date: "`r format(Sys.time(), '%d de %B de %Y')`"
 output:
   pdf_document:
-    fig_width: 5.5
+    fig_width: 5.75
 header-includes:
 - \usepackage[brazil]{babel}
 - \usepackage{geometry} 
@@ -34,6 +34,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE)
 
 rm(list = ls())
+
+mypallete <- c("#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22AA99","#AAAA11","#6633CC","#E67300","#8B0707","#651067","#329262","#5574A6","#3B3EAC")
 
 options(scipen=10000)
 
@@ -79,6 +81,102 @@ O estudo que se segue utiliza como base os dados da plataforma Instituto Mauro B
 
 A cidade de `r LocRef$Localidade` possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoLocal)` habitantes e uma área territorial de `r myformat(AreaLocal)` km², deste modo a densidade populacional atual fica projetada em `r myformat(PopulacaoLocal/AreaLocal)` hab/km².
 A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificação do IBGE, na *Mesorregião `r LocRef$Mesorregiao`* e na *Microrregião de `r LocRef$Microrregiao`* e segundo a SEGPLAN na *Região de Planejamento `r LocRef$RPSEGPLAN`*.
+
+## Densidade Demográfica
+
+### Mesorregião `r LocRef$Mesorregiao`
+
+```{r}
+source(file = "AnaliseMesorregiao.R")
+```
+
+A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
+Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
+
+```{r,fig.cap=paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao)}
+source(file = "GraficoPopulacaoMesorregiao.R")
+grafico
+```
+
+```{r}
+source(file = "TabelaPopulacaoMesoregiao.R")
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Microrregião","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = paste("Densidade Populacional da Mesorregião de",LocRef$Mesorregiao)) %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
+source(file = "GraficoMunicipiosMicrorregioes.R")
+grafico
+```
+
+### Microrregião de `r LocRef$Microrregiao`
+
+```{r}
+source(file = "AnaliseMicrorregiao.R")
+```
+
+A *Microrregião de `r LocRef$Microrregiao`*, possui em `r AnoRef` uma população projetada em `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r length(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
+Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
+
+```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
+source(file = "GraficoPopulacaoMicrorregiao.R")
+```
+
+```{r}
+source(file = "TabelaPopulacaoMicrorregiao.R")
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = paste("Densidade Populacional da Microrregião de",LocRef$Microrregiao)) %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+### Região de Planejamento `r LocRef$RPSEGPLAN`
+
+```{r}
+source(file = "AnaliseRegiaoPlanejamento.R")
+```
+
+A *Região de Planejamento `r LocRef$RPSEGPLAN`*, definida pela SEGPLAN, compreende um total `r nrow(LocalSEGPLAN)` cidades sendo as cinco cidades mais populosas `r head(RPSEGPLANPop$Localidade)`.
+Os municípios menos populosos são `r tail(RPSEGPLANPop$Localidade)`.
+A população da *Região de Planejamento `r LocRef$RPSEGPLAN`* em `r AnoRef` é projetada em `r myformat(PopulacaoSEGPLAN)` habitantes e sua área territorial é `r myformat(AreaSEGPLAN)` km².
+
+```{r}
+source(file = "TabelaPopulacaoRPSEGPLAN.R")
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Região de Planejamento","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = "Densidade populacional em cada região de planejamento definida pela SEGPLAN") %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
+source(file = "GraficoPopulacaoSEGPLAN.R")
+grafico
+```
+
+Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
+
+```{r}
+source(file = "TabelaPopulacaoCidadesRPSEGPLAN.R")
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
+      caption = paste("Densidade populacional em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)) %>% 
+kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
+source(file = "GraficoPopulacaoCidadesSEGPLAN.R")
+grafico
+```
 
 # Aspectos Econômicos
 
@@ -191,6 +289,15 @@ source(file = "GraficoEmpregosRAIS-Comercio-2.R")
 grafico
 ```
 
+```{r,fig.cap=paste("Número de postos de trabalho nos subsetores do setor de serviços em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+source(file = "GraficoEmpregosRAIS-Servicos.R")
+grafico
+```
+
+```{r,fig.cap=paste("Número de postos de trabalho nos subsetores do setor de serviços em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+source(file = "GraficoEmpregosRAIS-Transformacao.R")
+grafico
+```
 
 ### IDM - Educação
 
@@ -207,102 +314,6 @@ A pirâmide etária da cidade de goiânia baseada na população projetada para 
 
 ```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
 source(file = "GraficoPiramideEtaria.R")
-grafico
-```
-
-## Densidade Demográfica
-
-### Mesorregião `r LocRef$Mesorregiao`
-
-```{r}
-source(file = "AnaliseMesorregiao.R")
-```
-
-A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
-Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
-
-```{r,fig.cap=paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao)}
-source(file = "GraficoPopulacaoMesorregiao.R")
-grafico
-```
-
-```{r}
-source(file = "TabelaPopulacaoMesoregiao.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Microrregião","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade Populacional da Mesorregião de",LocRef$Mesorregiao)) %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
-```
-
-```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
-source(file = "GraficoMunicipiosMicrorregioes.R")
-grafico
-```
-
-### Microrregião de `r LocRef$Microrregiao`
-
-```{r}
-source(file = "AnaliseMicrorregiao.R")
-```
-
-A *Microrregião de `r LocRef$Microrregiao`*, possui em `r AnoRef` uma população projetada em `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r length(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
-Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
-
-```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
-source(file = "GraficoPopulacaoMicrorregiao.R")
-```
-
-```{r}
-source(file = "TabelaPopulacaoMicrorregiao.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade Populacional da Microrregião de",LocRef$Microrregiao)) %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
-```
-
-### Região de Planejamento `r LocRef$RPSEGPLAN`
-
-```{r}
-source(file = "AnaliseRegiaoPlanejamento.R")
-```
-
-A *Região de Planejamento `r LocRef$RPSEGPLAN`*, definida pela SEGPLAN, compreende um total `r nrow(LocalSEGPLAN)` cidades sendo as cinco cidades mais populosas `r head(RPSEGPLANPop$Localidade)`.
-Os municípios menos populosos são `r tail(RPSEGPLANPop$Localidade)`.
-A população da *Região de Planejamento `r LocRef$RPSEGPLAN`* em `r AnoRef` é projetada em `r myformat(PopulacaoSEGPLAN)` habitantes e sua área territorial é `r myformat(AreaSEGPLAN)` km².
-
-```{r}
-source(file = "TabelaPopulacaoRPSEGPLAN.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Região de Planejamento","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = "Densidade populacional em cada região de planejamento definida pela SEGPLAN") %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
-```
-
-```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
-source(file = "GraficoPopulacaoSEGPLAN.R")
-grafico
-```
-
-Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
-
-```{r}
-source(file = "TabelaPopulacaoCidadesRPSEGPLAN.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade populacional em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)) %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
-```
-
-```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
-source(file = "GraficoPopulacaoCidadesSEGPLAN.R")
 grafico
 ```
 

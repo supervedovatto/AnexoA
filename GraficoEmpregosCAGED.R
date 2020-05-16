@@ -13,7 +13,7 @@ dados <- Emprego %>%
 grafico <- dados %>% 
   ggplot(aes(x = Ano, y = Total)) +
     geom_line(aes(color = Situacao), stat="identity", size = 1) +
-    scale_color_brewer(palette="Set1") +
+    scale_color_manual(values = mypallete) +
     theme_bw() +
     theme(legend.position="bottom",
           axis.text.x = element_text(angle = 90),
