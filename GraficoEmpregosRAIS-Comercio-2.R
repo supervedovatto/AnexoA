@@ -2,7 +2,7 @@ load(file = "Dados/POCV.RData")
 
 level1 <- paste("Município de",LocRef$Localidade)
 tabela1 <- ComercioRAIS %>% 
-  filter(!is.na(Vagas) & Localidade == LocRef$Localidade & Ano >= 2011 & Vagas > 0) %>% 
+  filter(!is.na(Vagas) & Localidade == LocRef$Localidade & Ano >= "2011-01-01" & Vagas > 0) %>% 
   select(Localidade, Ano, Subsetor, Vagas) %>%  
   mutate(Referencia = level1) %>% 
   select(Referencia,Ano,Subsetor,Vagas)
@@ -10,7 +10,7 @@ tabela1 <- ComercioRAIS %>%
 level2 <- paste("RP",LocRef$RPSEGPLAN)
 tabela2 <- ComercioRAIS %>% 
   merge(RegioesGoias,by = c("Localidade")) %>% 
-  filter(!is.na(Vagas) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= 2011 & Vagas > 0) %>% 
+  filter(!is.na(Vagas) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= "2011-01-01" & Vagas > 0) %>% 
   select(RPSEGPLAN,Ano, Subsetor,Vagas) %>% 
   group_by(Ano,Subsetor) %>% 
   summarise(Vagas = sum(Vagas)) %>% 
@@ -19,7 +19,7 @@ tabela2 <- ComercioRAIS %>%
 
 level3 <- paste("Goiás")
 tabela3 <- ComercioRAIS %>% 
-  filter(!is.na(Vagas) & Ano >= 2011) %>% 
+  filter(!is.na(Vagas) & Ano >= "2011-01-01") %>% 
   select(Ano, Subsetor,Vagas) %>% 
   group_by(Ano,Subsetor) %>% 
   summarise(Vagas = sum(Vagas)) %>% 
@@ -44,5 +44,5 @@ grafico <- dados %>%
         strip.text = element_text(size = 6),
         legend.title = element_blank(),
         legend.direction = "horizontal") +
-  scale_x_continuous(breaks = unique(dados$Ano)) +
   labs(y = "Postos de Trabalho", x=NULL)
+grafico
