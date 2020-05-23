@@ -25,6 +25,7 @@ library(knitr)
 library(scales)
 library(janitor)
 library(kableExtra)
+library(ggradar)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -289,12 +290,12 @@ source(file = "GraficoEmpregosRAIS-Comercio-2.R")
 grafico
 ```
 
-```{r,fig.cap=paste("Número de postos de trabalho nos subsetores do setor de serviços em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+```{r,fig.cap=paste("Número de postos de trabalho nos subsetores de Serviços em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
 source(file = "GraficoEmpregosRAIS-Servicos.R")
 grafico
 ```
 
-```{r,fig.cap=paste("Número de postos de trabalho nos subsetores do setor de serviços em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+```{r,fig.cap=paste("Número de postos de trabalho nos subsetores da Indústria de Transformação em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
 source(file = "GraficoEmpregosRAIS-Transformacao.R")
 grafico
 ```
@@ -353,6 +354,68 @@ kable(x = tabela,
       format = "latex",
       booktabs = TRUE,
       col.names = c("Município","Federal","Estadual","Municipal","Particular","Total"),
+      caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano))) %>% 
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+```{r,fig.cap=paste("Evolução do IDEB em",LocRef$Localidade,"nos últimos anos")}
+source(file = "GraficoIDEB.R")
+grafico
+```
+
+```{r,fig.cap=paste("Distribuição do IDEB",lubridate::year(max(IDEB$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
+source(file = "GraficoIDEB-2.R")
+grafico
+```
+
+Outras informações sobre o IDM podem ser obtidas pelo link:
+
+ - [IDM 2018](https://www.imb.go.gov.br/files/docs/publicacoes/idm/idm2018.pdf)
+ - [IDM 2016](https://www.imb.go.gov.br/files/docs/publicacoes/idm/idm2016.pdf)
+ 
+```{r}
+source(file = "GraficoIDM-composicao.R")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+ComposicaoIDM("Educação")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM do Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+ComposicaoIDM("Trabalho")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+ComposicaoIDM("Economia")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+ComposicaoIDM("Infraestrutura")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Saúde para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+ComposicaoIDM("Saúde")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+ComposicaoIDM("Segurança")
+```
+
+```{r,fig.cap=paste("Distribuição por setor do IDM",lubridate::year(max(IDM$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
+source(file = "GraficoIDM-distribuição.R")
+grafico
+```
+
+```{r,fig.cap=paste("IDM",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade," e IDM mediano na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
+source(file = "GraficoIDM-radar.R")
+grafico
+```
+
+```{r}
+source(file = "TabelaIDM-radar.R")
+kable(x = tabela,
+      format = "latex",
+      booktabs = TRUE,
       caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano))) %>% 
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
