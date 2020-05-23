@@ -6,7 +6,6 @@ documentclass: book
 date: "`r format(Sys.time(), '%d de %B de %Y')`"
 output:
   pdf_document:
-    fig_width: 5.75
 header-includes:
 - \usepackage[brazil]{babel}
 - \usepackage{geometry} 
@@ -31,7 +30,6 @@ library(ggradar)
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       fig.align = 'center',
-                      fig.asp = 0.618,
                       warning = FALSE)
 
 rm(list = ls())
@@ -125,6 +123,7 @@ Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
 
 ```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
 source(file = "GraficoPopulacaoMicrorregiao.R")
+grafico
 ```
 
 ```{r}
@@ -375,30 +374,55 @@ Outras informações sobre o IDM podem ser obtidas pelo link:
  
 ```{r}
 source(file = "GraficoIDM-composicao.R")
+source(file = "GraficoIDM-radar.R")
 ```
 
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
 ComposicaoIDM("Educação")
 ```
 
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+RadarIDM("Educação")
+```
+
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM do Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
 ComposicaoIDM("Trabalho")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+RadarIDM("Trabalho")
 ```
 
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
 ComposicaoIDM("Economia")
 ```
 
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+RadarIDM("Economia")
+```
+
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
 ComposicaoIDM("Infraestrutura")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+RadarIDM("Infraestrutura")
 ```
 
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Saúde para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
 ComposicaoIDM("Saúde")
 ```
 
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+RadarIDM("Saúde")
+```
+
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
 ComposicaoIDM("Segurança")
+```
+
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+RadarIDM("Segurança")
 ```
 
 ```{r,fig.cap=paste("Distribuição por setor do IDM",lubridate::year(max(IDM$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
@@ -407,7 +431,7 @@ grafico
 ```
 
 ```{r,fig.cap=paste("IDM",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade," e IDM mediano na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
-source(file = "GraficoIDM-radar.R")
+source(file = "GraficoIDM-geral-radar.R")
 grafico
 ```
 
