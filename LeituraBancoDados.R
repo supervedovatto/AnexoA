@@ -4,6 +4,7 @@ rm(list = ls())
 library(readxl)
 library(tidyverse)
 library(reshape2)
+library(forcats)
 
 Meso <- tibble(read_delim("Dados/MesorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(Meso) <- c("Mesorregiao","Microrregiao")
@@ -160,39 +161,105 @@ AguaEsgoto <- merge(x = RegioesGoias,
                     by = c("Localidade"))
 
 #IDEB
-IDEB <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDEB"))
+IDEB <- tibble(read_delim("Dados/IDEB.csv", delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
 IDEB$Localidade <- factor(IDEB$Localidade)
-IDEB <- merge(x = RegioesGoias,y = IDEB,by=c("Localidade"),all = TRUE)
+IDEB <- IDEB %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "IDEB",variable.name = "Anos") %>% 
+  mutate(Rede = Anos)
+IDEB$Anos <- fct_collapse(IDEB$Anos,`Anos Iniciais` = head(levels(IDEB$Anos),4),`Anos Finais` = tail(levels(IDEB$Anos),4))
+IDEB$Rede <- fct_collapse(IDEB$Rede,Municipal=c("AnosIniciaisRedeMunicipal","AnosFinaisRedeMunicipal"))
+IDEB$Rede <- fct_collapse(IDEB$Rede,Estadual=c("AnosIniciaisRedeEstadual","AnosFinaisRedeEstadual"))
+IDEB$Rede <- fct_collapse(IDEB$Rede,Federal=c("AnosIniciaisRedeFederal","AnosFinaisRedeFederal"))
+IDEB$Rede <- fct_collapse(IDEB$Rede,Pública=c("AnosIniciaisRedePública","AnosFinaisRedePública"))
 
 #IDM - Economia
-IDMEconomia <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDM Economia"))
-IDMEconomia$Localidade <- factor(IDMEconomia$Localidade)
-IDMEconomia <- merge(x = RegioesGoias,y = IDMEconomia,by=c("Localidade"),all = TRUE)
-
+IDMEconomia <- read_delim(file = "Dados/IDM Economia.csv", 
+                          delim = ";", 
+                          escape_double = FALSE, 
+                          comment = "#", 
+                          col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                          trim_ws = TRUE) %>% 
+  tibble() %>% 
+  select(-`IDM Economia`) %>%
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Variável") %>% 
+  mutate(IDM = "Economia")
+  
 #IDM - Educação
-IDMEducacao <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDM Educação"))
-IDMEducacao$Localidade <- factor(IDMEducacao$Localidade)
-IDMEducacao <- merge(x = RegioesGoias,y = IDMEducacao,by=c("Localidade"),all = TRUE)
+IDMEducacao <- read_delim(file = "Dados/IDM Educação.csv", 
+                          delim = "\t", 
+                          escape_double = FALSE, 
+                          comment = "#", 
+                          col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                          trim_ws = TRUE) %>% 
+  tibble() %>% 
+  select(-`IDM Educacao`) %>%
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Variável") %>% 
+  mutate(IDM = "Educação",Variável = fct_recode(Variável,
+                                                "IDEB Anos Iniciais" = "IDEB 5 ano",
+                                                "IDEB Anos Finais" = "IDEB 9 ano"))
 
 #IDM - Infraestrutura
-IDMInfraestrutura <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDM Infraestrutura"))
-IDMInfraestrutura$Localidade <- factor(IDMInfraestrutura$Localidade)
-IDMInfraestrutura <- merge(x = RegioesGoias,y = IDMInfraestrutura,by=c("Localidade"),all = TRUE)
+IDMInfraestrutura <- read_delim(file = "Dados/IDM Infraestrutura.csv", 
+                          delim = ";", 
+                          escape_double = FALSE, 
+                          comment = "#", 
+                          col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                          trim_ws = TRUE) %>% 
+  tibble() %>% 
+  select(-`IDM Infraestrutura`) %>%
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Variável") %>% 
+  mutate(IDM = "Infraestrutura")
 
 #IDM - Saúde
-IDMSaude <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDM Saúde"))
-IDMSaude$Localidade <- factor(IDMSaude$Localidade)
-IDMSaude <- merge(x = RegioesGoias,y = IDMSaude,by=c("Localidade"),all = TRUE)
+IDMSaude <- read_delim(file = "Dados/IDM Saúde.csv", 
+                       delim = ";", 
+                       escape_double = FALSE, 
+                       comment = "#", 
+                       col_types = cols(Ano = col_date(format = "%Y")), 
+                       locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                       trim_ws = TRUE) %>% 
+  tibble() %>% 
+  select(-`IDM Saude`) %>%
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Variável") %>% 
+  mutate(IDM = "Saúde")
 
 #IDM - Segurança
-IDMSeguranca <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDM Segurança"))
-IDMSeguranca$Localidade <- factor(IDMSeguranca$Localidade)
-IDMSeguranca <- merge(x = RegioesGoias,y = IDMSeguranca,by=c("Localidade"),all = TRUE)
+IDMSeguranca <- read_delim(file = "Dados/IDM Segurança.csv", 
+                           delim = ";", 
+                           escape_double = FALSE, 
+                           comment = "#", 
+                           col_types = cols(Ano = col_date(format = "%Y")), 
+                           locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                           trim_ws = TRUE) %>% 
+  tibble() %>% 
+  select(-`IDM Segurança`) %>%
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Variável") %>% 
+  mutate(IDM = "Segurança")
 
 #IDM - Trabalho
-IDMTrabalho <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "IDM Trabalho"))
-IDMTrabalho$Localidade <- factor(IDMTrabalho$Localidade)
-IDMTrabalho <- merge(x = RegioesGoias,y = IDMTrabalho,by=c("Localidade"),all = TRUE)
+IDMTrabalho <- read_delim(file = "Dados/IDM Trabalho.csv", 
+                          delim = ";", 
+                          escape_double = FALSE, 
+                          comment = "#", 
+                          col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                          trim_ws = TRUE) %>% 
+  tibble() %>% 
+  select(-`IDM Trabalho`) %>%
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Variável") %>% 
+  mutate(IDM = "Trabalho")
+
+IDM <- rbind(IDMEconomia,IDMEducacao,IDMInfraestrutura,IDMSaude,IDMSeguranca,IDMTrabalho)
+rm(IDMEconomia,IDMEducacao,IDMInfraestrutura,IDMSaude,IDMSeguranca,IDMTrabalho)
 
 #Docentes
 Docentes <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Docentes"))
