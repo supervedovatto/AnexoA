@@ -11,4 +11,5 @@ grafico <- dados %>%
     scale_x_continuous(breaks = unique(dados$Ano)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = 2)) +
     theme_minimal() +
+    labs(caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
     theme(legend.position="bottom",axis.text.x = element_text(angle = 90))

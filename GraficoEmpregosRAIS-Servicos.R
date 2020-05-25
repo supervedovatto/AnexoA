@@ -41,5 +41,6 @@ grafico <- dados %>%
         axis.text.x = element_text(angle = 90),
         legend.title = element_blank(),
         legend.direction = "vertical",legend.text = element_text(size = 6)) +
-  labs(y = "Postos de Trabalho", x = NULL) +
+  labs(y = "Postos de Trabalho", x = NULL,
+       caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
   facet_wrap(~Referencia,ncol = 1,scales = "free_y")

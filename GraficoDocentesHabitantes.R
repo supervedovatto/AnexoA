@@ -15,4 +15,5 @@ grafico <- dados %>%
     labs(y = "Docentes para cada 100 mil habitantes",x="Ano") +
     scale_x_continuous(breaks = unique(dados$Ano)) +
     theme_minimal() +
+    labs(caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
     theme(legend.position="bottom",axis.text.x = element_text(angle = 90))

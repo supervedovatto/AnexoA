@@ -20,5 +20,6 @@ grafico <- dados %>%
           strip.text = element_text(size = 6),
           legend.title = element_blank()) +
     scale_x_continuous(breaks = unique(dados$Ano)) +
-    labs(y = "Total", x=NULL) +
+    labs(y = "Total", x=NULL,
+         caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
     facet_wrap(~Setor, ncol = 2,scales = "free_y")

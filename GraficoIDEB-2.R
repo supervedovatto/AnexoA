@@ -29,5 +29,6 @@ grafico <- dados %>%
     scale_fill_manual(values = mypallete) +
     theme_minimal() +
     theme(legend.position="bottom",legend.title = element_blank())+
-    labs(y = "Densidade", x = "IDEB") +
+    labs(y = "Densidade", x = "IDEB",
+         caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
     facet_grid(vars(Rede),vars(Referencia))

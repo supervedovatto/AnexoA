@@ -21,6 +21,7 @@ ComposicaoIDM <- function(Eixo){
           strip.text = element_text(size = 6),
           legend.title = element_blank(),
           legend.direction = "vertical") +
-    labs(y = paste("IDM",Eixo), x=NULL)
+    labs(y = paste("IDM",Eixo), x=NULL,
+         caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.")
 
   }

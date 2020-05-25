@@ -44,5 +44,6 @@ grafico <- dados %>%
         strip.text = element_text(size = 6),
         legend.title = element_blank(),
         legend.direction = "horizontal") +
-  labs(y = "Postos de Trabalho", x=NULL)
+  labs(y = "Postos de Trabalho", x=NULL,
+       caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.")
 grafico

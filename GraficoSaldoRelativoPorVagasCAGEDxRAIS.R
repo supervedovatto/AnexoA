@@ -46,5 +46,6 @@ grafico <- dados %>%
         legend.title = element_blank(),
         legend.direction = "horizontal") +
   scale_x_continuous(breaks = unique(dados$Ano)) +
-  labs(y = "Taxa de Aumento de Postos de Trabalho", x=NULL) +
+  labs(y = "Taxa de Aumento de Postos de Trabalho", x=NULL,
+       caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
   facet_wrap(~Setor, ncol = 2,scales = "free_y")
