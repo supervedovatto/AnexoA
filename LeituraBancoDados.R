@@ -5,6 +5,7 @@ library(readxl)
 library(tidyverse)
 library(reshape2)
 library(forcats)
+library(stringr)
 
 Meso <- tibble(read_delim("Dados/MesorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(Meso) <- c("Mesorregiao","Microrregiao")
@@ -39,11 +40,6 @@ Area <- merge(RegioesGoias,Area,by = "Localidade",all = TRUE)
 DensidadeDemografica <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Densidade Demográfica"))
 DensidadeDemografica$Localidade <- factor(DensidadeDemografica$Localidade)
 DensidadeDemografica <- merge(RegioesGoias,DensidadeDemografica,by = "Localidade",all = TRUE)
-
-# Taxa de Alfabetizaçao
-TaxaAlfabetizacao <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Taxa de Alfabetização"))
-TaxaAlfabetizacao$Localidade <- factor(TaxaAlfabetizacao$Localidade)
-TaxaAlfabetizacao <- merge(RegioesGoias,TaxaAlfabetizacao,by = "Localidade",all = TRUE)
 
 # Emprego - CAGED - Admitidos
 AdmitidosCAGED <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Emprego - CAGED - Admitidos"))
@@ -161,16 +157,17 @@ AguaEsgoto <- merge(x = RegioesGoias,
                     by = c("Localidade"))
 
 #IDEB
-IDEB <- tibble(read_delim("Dados/IDEB.csv", delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
-IDEB$Localidade <- factor(IDEB$Localidade)
-IDEB <- IDEB %>% 
+IDEB <- tibble(read_delim("Dados/IDEB.csv", delim = "\t", 
+                          escape_double = FALSE, 
+                          comment = "#", 
+                          col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                          trim_ws = TRUE)) %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "IDEB",variable.name = "Anos") %>% 
-  mutate(Rede = Anos)
-IDEB$Anos <- fct_collapse(IDEB$Anos,`Anos Iniciais` = head(levels(IDEB$Anos),4),`Anos Finais` = tail(levels(IDEB$Anos),4))
-IDEB$Rede <- fct_collapse(IDEB$Rede,Municipal=c("AnosIniciaisRedeMunicipal","AnosFinaisRedeMunicipal"))
-IDEB$Rede <- fct_collapse(IDEB$Rede,Estadual=c("AnosIniciaisRedeEstadual","AnosFinaisRedeEstadual"))
-IDEB$Rede <- fct_collapse(IDEB$Rede,Federal=c("AnosIniciaisRedeFederal","AnosFinaisRedeFederal"))
-IDEB$Rede <- fct_collapse(IDEB$Rede,Pública=c("AnosIniciaisRedePública","AnosFinaisRedePública"))
+  filter(!is.na(IDEB)) %>% 
+  separate(Anos,into = c("Anos","Rede"),sep = "/") %>% 
+  mutate(Anos = factor(Anos),Rede = factor(Rede))
 
 #IDM - Economia
 IDMEconomia <- read_delim(file = "Dados/IDM Economia.csv", 
@@ -283,20 +280,61 @@ EstabelecimentosESalas <- Estabelecimentos %>%
   merge(RegioesGoias,by=c("Localidade"),all = TRUE)
 
 #Matrículas
-Matrículas <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Matrículas"))
-Matrículas$Localidade <- factor(Matrículas$Localidade)
-Matrículas <- merge(x = RegioesGoias,y = Matrículas,by=c("Localidade"),all = TRUE)
+Matriculas <- read_delim(file = "Dados/Matrículas.csv", 
+                         delim = "\t", 
+                         escape_double = FALSE, 
+                         comment = "#", 
+                         col_types = cols(Ano = col_date(format = "%Y")), 
+                         locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                         trim_ws = TRUE) %>% 
+  tibble() %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Total",variable.name = "Modalidade") %>% 
+  filter(!is.na(Total)) %>% 
+  separate(Modalidade,into = c("Modalidade","Rede"),sep = "/") %>% 
+  mutate(Modalidade = factor(Modalidade), Rede = factor(Rede))
 
 #Abandono
-TaxaAbandono <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Taxa de Abandono"))
-TaxaAbandono$Localidade <- factor(TaxaAbandono$Localidade)
-TaxaAbandono <- merge(x = RegioesGoias,y = TaxaAbandono,by=c("Localidade"),all = TRUE)
+TaxaAbandono <- read_delim(file = "Dados/Taxa de Abandono.csv", 
+                           delim = ";", 
+                           escape_double = FALSE, 
+                           comment = "#", 
+                           col_types = cols(Ano = col_date(format = "%Y")), 
+                           locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                           trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
+  rename(Abandono = `Taxa de Abandono`)
+
 
 #Reprovação
-TaxaReprovação <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Taxa de Reprovação"))
-TaxaReprovação$Localidade <- factor(TaxaReprovação$Localidade)
-TaxaReprovação <- merge(x = RegioesGoias,y = TaxaReprovação,by=c("Localidade"),all = TRUE)
+TaxaReprovacao <- read_delim(file = "Dados/Taxa de Reprovação.csv", 
+                           delim = ";", 
+                           escape_double = FALSE, 
+                           comment = "#", 
+                           col_types = cols(Ano = col_date(format = "%Y")), 
+                           locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                           trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
+  rename(Reprovação = `Taxa de Reprovação`)
 
-rm(LocalAno,Meso,Micro,MesoMicro,SEGPLAN,P1,P2,P3,P4,P5,FaixasEtarias)
+# Taxa de Alfabetizaçao
+TaxaAlfabetizacao <- read_delim(file = "Dados/Taxa de Alfabetização.csv", 
+                             delim = ";", 
+                             escape_double = FALSE, 
+                             comment = "#", 
+                             col_types = cols(Ano = col_date(format = "%Y")), 
+                             locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                             trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
+  rename(Alfabetização = Alfabetizacao)
+
+Taxas <- merge(TaxaAbandono,TaxaReprovacao,by = c("Localidade","Ano"),all = T) %>% 
+  merge(TaxaAlfabetizacao,by = c("Localidade","Ano"),all = T) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Taxa") %>% 
+  filter(!is.na(Valor))
+
+rm(LocalAno,Meso,Micro,MesoMicro,SEGPLAN,AguaEsgotoLigacoes,AguaEsgotoPercentual,Percentual,
+   P1,P2,P3,P4,P5,FaixasEtarias,TaxaAlfabetizacao,Estabelecimentos,
+   TaxaAbandono,TaxaReprovacao,AdmitidosCAGED,DesligadosCAGED,Ligacoes)
 
 save.image(file = "Dados/BDE.RData")
