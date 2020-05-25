@@ -104,7 +104,8 @@ kable(x = tabela,
       booktabs = TRUE,
       col.names = c("Microrregião","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
       caption = paste("Densidade Populacional da Mesorregião de",LocRef$Mesorregiao)) %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
@@ -133,7 +134,8 @@ kable(x = tabela,
       booktabs = TRUE,
       col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
       caption = paste("Densidade Populacional da Microrregião de",LocRef$Microrregiao)) %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
+kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ### Região de Planejamento `r LocRef$RPSEGPLAN`
@@ -153,7 +155,8 @@ kable(x = tabela,
       booktabs = TRUE,
       col.names = c("Região de Planejamento","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
       caption = "Densidade populacional em cada região de planejamento definida pela SEGPLAN") %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
+kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
@@ -170,7 +173,8 @@ kable(x = tabela,
       booktabs = TRUE,
       col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
       caption = paste("Densidade populacional em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)) %>% 
-kable_styling(latex_options = c("striped", "hold_position"))
+kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
@@ -191,7 +195,8 @@ tabela %>%
         booktabs = TRUE,
         caption = paste("Saldo acumulado da geração de empregos por setor entre",max(Emprego$Ano)-5,"e",max(Emprego$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a CAGED.")) %>%
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "25em")
+  column_spec(1, width = "25em") %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap=paste("Total de postos de trabalho por setor nos últimos anos em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no Município de",LocRef$Localidade,"segundo dados da RAIS."),fig.asp = 1.618}
@@ -218,7 +223,8 @@ tabela %>%
         booktabs = TRUE,
         caption = paste("Total de empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em")
+  column_spec(1, width = "20em") %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 O Rendimento médio do Setor no municipio de Goiânia pode ser Verificado na tabela à seguir.
@@ -232,7 +238,8 @@ tabela %>%
         booktabs = TRUE,
         caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em")
+  column_spec(1, width = "20em") %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r, results='asis'}
@@ -243,7 +250,8 @@ tabela %>%
         booktabs = TRUE,
         caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"na Região de Planejamento de",LocRef$RPSEGPLAN,"segundo a RAIS.")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em")
+  column_spec(1, width = "20em") %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r, results='asis'}
@@ -254,7 +262,8 @@ tabela %>%
         booktabs = TRUE,
         caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"em Goiás segundo a RAIS.")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em")
+  column_spec(1, width = "20em") %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T)
 ```
 
 ```{r, results='asis'}
@@ -265,7 +274,8 @@ tabela %>%
         booktabs = TRUE,
         caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"em Goiás segundo a RAIS.")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em")
+  column_spec(1, width = "20em") %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
@@ -344,7 +354,8 @@ kable(x = tabela,
       booktabs = TRUE,
       col.names = c("Cidade","Federal (%)","Estadual (%)","Municipal (%)","Particular (%)"),
       caption = paste("Percentual de utilização das salas de aula nas cidades da Região de Planejamento",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano),"nas diferentes redes de ensino")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r}
@@ -354,7 +365,8 @@ kable(x = tabela,
       booktabs = TRUE,
       col.names = c("Município","Federal","Estadual","Municipal","Particular","Total"),
       caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano))) %>% 
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap=paste("Evolução do IDEB em",LocRef$Localidade,"nos últimos anos")}
@@ -440,8 +452,10 @@ source(file = "TabelaIDM-radar.R")
 kable(x = tabela,
       format = "latex",
       booktabs = TRUE,
-      caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano))) %>% 
-  kable_styling(latex_options = c("striped", "hold_position"))
+      caption = paste("IDMs",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade,"e IDMs médios dos nunicípios da Região de Planejamento",LocRef$RPSEGPLAN,"e de Goiás.")) %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+  row_spec(0, angle = 90) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.", footnote_as_chunk = T, threeparttable = T)
 ```
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
