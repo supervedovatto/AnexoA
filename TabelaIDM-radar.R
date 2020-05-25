@@ -26,7 +26,10 @@ tabela3 <- IDM %>%
   summarise(Valor = median(Valor,rm.na = TRUE)) %>% 
   mutate(Referencia = level3)
 
-tabela <- rbind(tabela1,tabela2,tabela3) %>% 
+IDMs <- rbind(tabela1,tabela2,tabela3) %>% 
   mutate(Referencia = factor(Referencia,ordered = T,levels = c(level1,level2,level3))) %>% 
   dcast(Referencia~IDM,value.var = "Valor") %>% 
-  mutate(IDM = round((Economia + Educação + Infraestrutura + Saúde + Segurança + Trabalho)/6,2))
+  mutate("IDM Geral" = round((Economia + Educação + Infraestrutura + Saúde + Segurança + Trabalho)/6,2))
+
+tabela <- round(IDMs[,-1],2)
+row.names(tabela) <- IDMs$Referencia
