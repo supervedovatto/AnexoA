@@ -1,12 +1,13 @@
 load(file = "Dados/POCV.RData")
 
 grafico <- PopulacaoProjecao %>% 
-  filter(Ano == AnoRef) %>% 
+  filter(Ano == DataRef) %>% 
+  merge(RegioesGoias) %>% 
   group_by(RPSEGPLAN) %>% 
   summarise(Populacao = sum(Quantidade)) %>% 
   arrange(desc(RPSEGPLAN)) %>% 
-  mutate(freq = Populacao/sum(Populacao)) %>%
-  mutate(ypos = cumsum(freq)-freq/2) %>% 
+  mutate(freq = Populacao/sum(Populacao),
+         ypos = cumsum(freq)-freq/2) %>% 
   ggplot(aes(x=2,y=freq,fill=RPSEGPLAN)) +
     geom_bar(stat = "identity") +
     geom_text(aes(y = ypos, label = scales::percent(freq,decimal.mark = ",",accuracy = 0.1)), size=4,color = "white") +

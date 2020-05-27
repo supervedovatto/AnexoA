@@ -25,6 +25,8 @@ library(scales)
 library(janitor)
 library(kableExtra)
 library(ggradar)
+library(forcats)
+library(lubridate)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -47,13 +49,14 @@ load(file = "Dados/BDE.RData")
 #Para que o relatório seja gerado basta informar a cidade e o ano de referẽncia abaixo.
 #Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
 Municipio <- "Goiânia"
-AnoRef <- 2020
+DataRef <- "2020-01-01"
+AnoRef <- lubridate::year(DataRef)
 
 LocRef <- RegioesGoias %>% 
   filter(Localidade == Municipio)
 
 PopulacaoLocal <- PopulacaoProjecao %>%
-    filter(Ano == AnoRef & Localidade == LocRef$Localidade) %>%
+    filter(Ano == max(PopulacaoProjecao$Ano) & Localidade == LocRef$Localidade) %>%
     summarise(Populacao = sum(Quantidade))
 
 AreaLocal <- Area %>%

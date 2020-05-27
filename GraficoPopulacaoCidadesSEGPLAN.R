@@ -1,7 +1,6 @@
-load(file = "Dados/POCV.RData")
-
 SEGPLAN.Populacao <- PopulacaoProjecao %>% 
-  filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano == AnoRef) %>% 
+  merge(RegioesGoias) %>% 
+  filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano == DataRef) %>% 
   group_by(Localidade) %>% 
   summarise(Populacao = sum(Quantidade)) %>% 
   arrange(desc(Populacao)) %>%

@@ -5,15 +5,17 @@ LocRefMicro <- RegioesGoias %>%
   select(Localidade)
 
 PopulacaoMicro <- PopulacaoProjecao %>% 
-  filter(Ano == AnoRef & Microrregiao == LocRef$Microrregiao) %>% 
+  merge(RegioesGoias) %>% 
+  filter(Ano == DataRef & Microrregiao == LocRef$Microrregiao) %>% 
   summarise(Populacao = sum(Quantidade))
 
 AreaMicro <- Area %>%
   filter(Ano == max(Area$Ano) & Microrregiao == LocRef$Microrregiao) %>%
   select(AreaTerritorial) %>%
-  summarise(sum(AreaTerritorial))
+  summarise(Total = sum(AreaTerritorial))
 
 LocRefPop <- PopulacaoProjecao %>%
+  merge(RegioesGoias) %>% 
   filter(Microrregiao == LocRef$Microrregiao) %>%
   group_by(Localidade) %>%
   summarise(Populacao = sum(Quantidade)) %>%

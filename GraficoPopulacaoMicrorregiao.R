@@ -1,8 +1,8 @@
 load(file = "Dados/POCV.RData")
 
 Micro.Populacao <- PopulacaoProjecao %>% 
-  filter(Microrregiao == LocRef$Microrregiao) %>% 
-  filter(Ano == AnoRef) %>%
+  merge(RegioesGoias) %>% 
+  filter(Microrregiao == LocRef$Microrregiao & Ano == DataRef) %>% 
   group_by(Localidade) %>% 
   summarise(Populacao = sum(Quantidade)) %>% 
   arrange(desc(Populacao)) %>%
