@@ -1,15 +1,16 @@
 load(file = "Dados/POCV.RData")
 
-AnoInicial <- min(PopulacaoProjecao$Ano)
-AnosEscolha <- round(seq(from = AnoInicial,to = AnoRef,length.out = 3))
+AnosEscolha <- seq(ymd(max(PopulacaoProjecao$Ano)),ymd(min(PopulacaoProjecao$Ano)), by = '-4 year')
 
 Piramide <- PopulacaoProjecao %>%
   filter(Ano %in% AnosEscolha & Localidade == LocRef$Localidade) %>%
-  select(Sexo,Ano,Faixa,Quantidade)
-
-Piramide$Faixa <- forcats::fct_collapse(Piramide$Faixa,
-                                        '0 a 9' = c("0 a 4","5 a 9"),
-                                        '10 a 19' = c("10 a 14","15 a 19"))
+  select(Sexo,Ano,Faixa,Quantidade) %>% 
+  mutate(Faixa = fct_collapse(Faixa,
+                               '0 a 9' = c("0 a 4","5 a 9"),
+                               '10 a 19' = c("10 a 14","15 a 19"))) %>% 
+  mutate(Sexo = fct_recode(Sexo,
+                           Masculino = "Masculina",
+                           Feminino = "Feminina"))
 
 ajuste.coef <- 0.075*max(Piramide$Quantidade)
 
@@ -27,4 +28,4 @@ grafico <- Piramide %>%
     scale_y_continuous(labels = abs, limits = 1.1*max(Piramide$Quantidade) * c(-1,1)) +
     scale_fill_manual(values = mypallete) +
     labs(y = "População",x="Faixa etária") +
-    facet_wrap(~Ano,ncol = 1)
+    facet_wrap(~Ano,ncol = 1,labeller = labeller(Ano = lubridate::year(AnosEscolha)))
