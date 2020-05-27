@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 dados <- Emprego %>% 
   filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano >= max(Emprego$Ano)-10 & Setor != "Atividade não especificada ou classificada") %>%
   select(Ano,Admitidos,Desligados,Setor) %>% 
