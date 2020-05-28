@@ -52,7 +52,10 @@ RadarIDM <- function(Eixo) {
     dcast(Referencia~Variável,value.var = "Valor") %>% 
     ggradar(grid.max = 10,values.radar = "",
             legend.position = "bottom",
-            legend.text.size = 8,group.line.width = 0.5,group.point.size = 3,
+            legend.text.size = 8,
+            group.line.width = 0.5,
+            group.point.size = 3,
             axis.label.size = 3) +
-    labs(caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.")
+    labs(caption = "Fonte: BDE/IMB
+                    Acesso: 19/03/2020")
 }
