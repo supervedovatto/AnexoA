@@ -38,7 +38,7 @@ rm(list = ls())
 
 mypallete <- c("#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22AA99","#AAAA11","#6633CC","#E67300","#8B0707","#651067","#329262","#5574A6","#3B3EAC")
 
-options(scipen=10000)
+options(scipen=10000,big.mark=".",decimal.mark=",",scientific=FALSE)
 
 #Para que o relatório seja gerado basta informar a cidade e o ano de referẽncia abaixo.
 #Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
@@ -62,6 +62,17 @@ PopulacaoLocal <- PopulacaoProjecao %>%
 AreaLocal <- Area %>%
     filter(Ano == max(Area$Ano) & Localidade == LocRef$Localidade) %>%
     summarise(Area = sum(AreaTerritorial))
+
+Top5 <- PopulacaoProjecao %>% 
+  merge(RegioesGoias) %>% 
+  filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano == max(PopulacaoProjecao$Ano)) %>% 
+  group_by(Localidade) %>% 
+  summarise(Populacao = sum(Quantidade)) %>% 
+  mutate(ranking = rank(desc(Populacao))) %>% 
+  arrange(ranking) %>% 
+  filter(ranking<=5)
+
+MunicipiosSEGPLANRef <- Top5$Localidade
 
 myformat <- function(x) format(x,big.mark=".",decimal.mark=",",scientific=FALSE)
 
@@ -240,43 +251,10 @@ tabela %>%
   kable(format = "latex",
         booktabs = TRUE,
         caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em") %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
-```
-
-```{r, results='asis'}
-source(file = "TabelaEmpregosRAIS-3.R")
-tabela %>%
-  mutate_all(linebreak) %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"na Região de Planejamento de",LocRef$RPSEGPLAN,"segundo a RAIS.")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em") %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
-```
-
-```{r, results='asis'}
-source(file = "TabelaEmpregosRAIS-4.R")
-tabela %>%
-  mutate_all(linebreak) %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"em Goiás segundo a RAIS.")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em") %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T)
-```
-
-```{r, results='asis'}
-source(file = "TabelaEmpregosRAIS-4.R")
-tabela %>%
-  mutate_all(linebreak) %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"em Goiás segundo a RAIS.")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
+    kable_styling("striped", full_width = F) %>%
+    pack_rows(paste("Município de",LocRef$Localidade), 1, 8) %>%
+    pack_rows(paste("Região de Planejamento",LocRef$RPSEGPLAN), 9, 16) %>% 
+    pack_rows("Estado de Goiás", 17, 24) %>% 
   column_spec(1, width = "20em") %>% 
   footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
@@ -352,33 +330,40 @@ grafico
 
 ```{r}
 source(file = "TabelaUtilizacaoSalasProporcao.R")
+opts <- options(knitr.kable.NA = "")
 kable(x = tabela,
       format = "latex",
       booktabs = TRUE,
       col.names = c("Cidade","Federal (%)","Estadual (%)","Municipal (%)","Particular (%)"),
-      caption = paste("Percentual de utilização das salas de aula nas cidades da Região de Planejamento",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano),"nas diferentes redes de ensino")) %>% 
+      caption = paste("Percentual de utilização das salas de aula nas cidades da Região de Planejamento",LocRef$RPSEGPLAN,"em",max(SalasAula$Ano),"nas diferentes redes de ensino")) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
   footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r}
 source(file = "TabelaSalasExistentes.R")
+opts <- options(knitr.kable.NA = "")
 kable(x = tabela,
       format = "latex",
       booktabs = TRUE,
       col.names = c("Município","Federal","Estadual","Municipal","Particular","Total"),
-      caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(EstabelecimentosESalas$Ano))) %>% 
+      caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(SalasAula$Ano))) %>% 
   kable_styling(latex_options = c("striped", "hold_position")) %>% 
   footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
-```{r,fig.cap=paste("Evolução do IDEB em",LocRef$Localidade,"nos últimos anos")}
-source(file = "GraficoIDEB.R")
+```{r,fig.cap=paste("Evolução das Taxas de Reprovação e Abandono escolar no Estado de Goiás (boxplots) e no município de",LocRef$Localidade,"(linha) nos últimos anos"),fig.asp = 1.25}
+source(file = "GraficoTaxasRepAban2.R")
 grafico
 ```
 
-```{r,fig.cap=paste("Distribuição do IDEB",lubridate::year(max(IDEB$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
+```{r,fig.cap=paste("Distribuição do IDEB",lubridate::year(max(IDEB$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
 source(file = "GraficoIDEB-2.R")
+grafico
+```
+
+```{r,fig.cap=paste("Evolução do IDEB no Estado de Goiás (boxplot) e no Município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.25}
+source(file = "GraficoIDEB-3.R")
 grafico
 ```
 
@@ -392,60 +377,60 @@ source(file = "GraficoIDM-composicao.R")
 source(file = "GraficoIDM-radar.R")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Educação")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Educação")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM do Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM do Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Trabalho")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Trabalho")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Economia")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Economia")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Infraestrutura")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Infraestrutura")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Saúde para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Saúde para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Saúde")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Infraestrutura para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Saúde")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 2*0.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Segurança")
 ```
 
-```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.618}
+```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Segurança para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Segurança")
 ```
 
-```{r,fig.cap=paste("Distribuição por setor do IDM",lubridate::year(max(IDM$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
+```{r,fig.cap=paste("Distribuição por setor do IDM",lubridate::year(max(IDM$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
 source(file = "GraficoIDM-distribuição.R")
 grafico
 ```
 
-```{r,fig.cap=paste("IDM",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade," e IDM mediano na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1.618}
+```{r,fig.cap=paste("IDM",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade," e IDM mediano na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
 source(file = "GraficoIDM-geral-radar.R")
 grafico
 ```
@@ -460,6 +445,11 @@ kable(x = tabela,
   row_spec(0, angle = 90) %>% 
   footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.", footnote_as_chunk = T, threeparttable = T)
 ```
+
+```{r}
+
+```
+
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
 
