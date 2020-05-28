@@ -105,58 +105,55 @@ TransformacaoRAIS <- TransformacaoRAIS %>%
                  value.name="Vagas")
 
 # Projeçao Projeçao
-PopulacaoProjecao <- tibble(read_delim("Dados/PopulacaoProjeção.csv",delim = "\t",
-                                       escape_double = FALSE, comment = "#",
-                                       col_types = cols(Ano = col_date(format = "%Y")),
-                                       locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE)) %>% 
+PopulacaoProjecao <- read_delim("Dados/PopulacaoProjeção.csv",delim = "\t",
+                                 escape_double = FALSE, comment = "#",
+                                 col_types = cols(Ano = col_date(format = "%Y")),
+                                 locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>%
+  tibble() %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Quantidade") %>% 
   separate(variable,into = c("Sexo","Faixa"),sep = "/") %>% 
   mutate(Sexo = factor(Sexo),Faixa = factor(Faixa,ordered = T),Localidade = factor(Localidade))
 
 # Abastacimento de Agua e Esgoto
-AtendimentoAgua <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Abastecimento de Água"))
-AtendimentoAgua$Localidade <- factor(AtendimentoAgua$Localidade)
-Esgoto <- tibble(read_excel("Dados/IMB-GYN.xlsx", sheet = "Esgoto"))
-Esgoto$Localidade <- factor(Esgoto$Localidade)
-AguaEsgoto <- merge(x = AtendimentoAgua,y = Esgoto,by=c("Localidade","Ano"),all = TRUE)
-rm(AtendimentoAgua,Esgoto)
+Agua <- read_delim("Dados/Abastecimento de Água.csv",delim = ";",
+                   escape_double = FALSE, comment = "#",
+                   col_types = cols(Ano = col_date(format = "%Y")),
+                   locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>%
+  tibble() %>% 
+  mutate(Localidade = factor(Localidade))
+Esgoto <- read_delim("Dados/Esgoto.csv",delim = ";",
+                     escape_double = FALSE, comment = "#",
+                     col_types = cols(Ano = col_date(format = "%Y")),
+                     locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>%
+  tibble() %>% 
+  mutate(Localidade = factor(Localidade))
+AguaEsgoto <- merge(Agua,Esgoto,by=c("Localidade","Ano"),all = TRUE)
 Ligacoes <- select(AguaEsgoto,-c("PercentualPopulacaoAtendidaAgua","PercentualPopulacaoAtendidaEsgoto"))
 colnames(Ligacoes) <- c("Localidade","Ano","Agua","Esgoto")
 AguaEsgotoLigacoes <- reshape2::melt(Ligacoes,id.vars = c("Localidade","Ano"),value.name = "Ligacoes",variable.name = "Servico")
 Percentual <- select(AguaEsgoto,-c("LigacoesAgua","LigacoesEsgoto"))
 colnames(Percentual) <- c("Localidade","Ano","Agua","Esgoto")
-AguaEsgotoPercentual <- reshape2::melt(Percentual,
+AguaEsgoto <- reshape2::melt(Percentual,
                              id.vars = c("Localidade","Ano"),
                              value.name = "Percentual",
-                             variable.name = "Servico")
-AguaEsgoto <- merge(x = AguaEsgotoLigacoes,
-                    y = AguaEsgotoPercentual,
-                    by = c("Localidade","Ano","Servico"))
-AguaEsgoto <- merge(x = RegioesGoias,
-                    y = AguaEsgoto,
-                    by = c("Localidade"))
+                             variable.name = "Servico") %>% 
+  merge(AguaEsgotoLigacoes,by = c("Localidade","Ano","Servico")) %>% 
+  filter(!is.na(Percentual) | !is.na(Ligacoes))
 
 #IDEB
-IDEB <- tibble(read_delim("Dados/IDEB.csv", delim = "\t", 
-                          escape_double = FALSE, 
-                          comment = "#", 
+IDEB <- tibble(read_delim("Dados/IDEB.csv", delim = "\t", escape_double = FALSE, comment = "#", 
                           col_types = cols(Ano = col_date(format = "%Y")), 
-                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                          trim_ws = TRUE)) %>% 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE)) %>% 
   mutate(Localidade = factor(Localidade)) %>% 
-  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "IDEB",variable.name = "Anos") %>% 
-  filter(!is.na(IDEB)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Anos") %>% 
+  filter(!is.na(Valor)) %>% 
   separate(Anos,into = c("Anos","Rede"),sep = "/") %>% 
   mutate(Anos = factor(Anos),Rede = factor(Rede))
 
 #IDM - Economia
-IDMEconomia <- read_delim(file = "Dados/IDM Economia.csv", 
-                          delim = ";", 
-                          escape_double = FALSE, 
-                          comment = "#", 
-                          col_types = cols(Ano = col_date(format = "%Y")), 
-                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                          trim_ws = TRUE) %>% 
+IDMEconomia <- read_delim(file = "Dados/IDM Economia.csv", delim = ";", escape_double = FALSE, 
+                          comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   tibble() %>% 
   select(-`IDM Economia`) %>%
   mutate(Localidade = factor(Localidade)) %>% 
@@ -164,13 +161,9 @@ IDMEconomia <- read_delim(file = "Dados/IDM Economia.csv",
   mutate(IDM = "Economia")
   
 #IDM - Educação
-IDMEducacao <- read_delim(file = "Dados/IDM Educação.csv", 
-                          delim = "\t", 
-                          escape_double = FALSE, 
-                          comment = "#", 
-                          col_types = cols(Ano = col_date(format = "%Y")), 
-                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                          trim_ws = TRUE) %>% 
+IDMEducacao <- read_delim(file = "Dados/IDM Educação.csv", delim = "\t", escape_double = FALSE, 
+                          comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                          locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   tibble() %>% 
   select(-`IDM Educacao`) %>%
   mutate(Localidade = factor(Localidade)) %>% 
@@ -180,13 +173,9 @@ IDMEducacao <- read_delim(file = "Dados/IDM Educação.csv",
                                                 "IDEB Anos Finais" = "IDEB 9 ano"))
 
 #IDM - Infraestrutura
-IDMInfraestrutura <- read_delim(file = "Dados/IDM Infraestrutura.csv", 
-                          delim = ";", 
-                          escape_double = FALSE, 
-                          comment = "#", 
-                          col_types = cols(Ano = col_date(format = "%Y")), 
-                          locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                          trim_ws = TRUE) %>% 
+IDMInfraestrutura <- read_delim(file = "Dados/IDM Infraestrutura.csv", delim = ";", escape_double = FALSE, 
+                                comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                                locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   tibble() %>% 
   select(-`IDM Infraestrutura`) %>%
   mutate(Localidade = factor(Localidade)) %>% 
@@ -194,13 +183,9 @@ IDMInfraestrutura <- read_delim(file = "Dados/IDM Infraestrutura.csv",
   mutate(IDM = "Infraestrutura")
 
 #IDM - Saúde
-IDMSaude <- read_delim(file = "Dados/IDM Saúde.csv", 
-                       delim = ";", 
-                       escape_double = FALSE, 
-                       comment = "#", 
-                       col_types = cols(Ano = col_date(format = "%Y")), 
-                       locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                       trim_ws = TRUE) %>% 
+IDMSaude <- read_delim(file = "Dados/IDM Saúde.csv", delim = ";", escape_double = FALSE, 
+                       comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                       locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   tibble() %>% 
   select(-`IDM Saude`) %>%
   mutate(Localidade = factor(Localidade)) %>% 
@@ -208,13 +193,9 @@ IDMSaude <- read_delim(file = "Dados/IDM Saúde.csv",
   mutate(IDM = "Saúde")
 
 #IDM - Segurança
-IDMSeguranca <- read_delim(file = "Dados/IDM Segurança.csv", 
-                           delim = ";", 
-                           escape_double = FALSE, 
-                           comment = "#", 
-                           col_types = cols(Ano = col_date(format = "%Y")), 
-                           locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                           trim_ws = TRUE) %>% 
+IDMSeguranca <- read_delim(file = "Dados/IDM Segurança.csv", delim = ";", escape_double = FALSE, 
+                           comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                           locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   tibble() %>% 
   select(-`IDM Segurança`) %>%
   mutate(Localidade = factor(Localidade)) %>% 
@@ -242,28 +223,28 @@ Docentes <- read_delim(file = "Dados/Docentes.csv", delim = ";", escape_double =
   melt(id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Quantidade")
 
 #Estabelescimentos de Ensino
-EstabelecimentosESalas <- tibble(read_excel("Dados/IMB-GYN.xlsx",sheet = "Estabelecimentos de Ensino"))
-EstabelecimentosESalas$Localidade <- factor(EstabelecimentosESalas$Localidade)
-Estabelecimentos <- select(EstabelecimentosESalas, -starts_with("Salas"))
-SalasExistentes <- select(EstabelecimentosESalas, -starts_with("Estabelecimentos") & -contains("Utilizadas"))
-SalasUtilizadas <- select(EstabelecimentosESalas, -starts_with("Estabelecimentos") & -contains("Existentes"))
-colnames(Estabelecimentos)[-c(1,2)] <- colnames(SalasExistentes)[-c(1,2)] <- colnames(SalasUtilizadas)[-c(1,2)] <- c("Federal","Estadual","Municipal","Particular")
-Estabelecimentos <- reshape2::melt(Estabelecimentos,id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Estabelecimentos")
-SalasExistentes <- reshape2::melt(SalasExistentes,id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Salas Existentes")
-SalasUtilizadas <- reshape2::melt(SalasUtilizadas,id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Salas Utilizadas")
-EstabelecimentosESalas <- Estabelecimentos %>% 
-  merge(SalasExistentes,by=c("Localidade","Ano","Rede"),all = TRUE) %>% 
-  merge(SalasUtilizadas,by=c("Localidade","Ano","Rede"),all = TRUE) %>% 
-  merge(RegioesGoias,by=c("Localidade"),all = TRUE)
+Estabelescimentos <- read_delim(file = "Dados/Estabelecimentos de Ensino.csv", delim = ";", escape_double = FALSE, 
+                                comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                                locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Total") %>% 
+  mutate(Rede = factor(Rede,ordered = T,levels = c("Federal","Estadual","Municipal","Particular"))) %>% 
+  filter(!is.na(Total) & Total > 0)
+
+#Salas de Aula Usadas e Disponíveis
+SalasAula <- read_delim(file = "Dados/Salas de Aula.csv", delim = "\t", escape_double = FALSE, 
+                        comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                        locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(id.vars = c("Localidade","Ano"),variable.name = "Rede",value.name = "Total") %>% 
+  separate(col = Rede,into = c("Situacao","Rede"),sep = "/") %>%
+  mutate(Rede = factor(Rede,ordered = T,levels = c("Federal","Estadual","Municipal","Particular")), Situacao = factor(Situacao)) %>% 
+  filter(!is.na(Total) & Total > 0)
 
 #Matrículas
-Matriculas <- read_delim(file = "Dados/Matrículas.csv", 
-                         delim = "\t", 
-                         escape_double = FALSE, 
-                         comment = "#", 
-                         col_types = cols(Ano = col_date(format = "%Y")), 
-                         locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                         trim_ws = TRUE) %>% 
+Matriculas <- read_delim(file = "Dados/Matrículas.csv", delim = "\t", escape_double = FALSE, 
+                         comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                         locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   tibble() %>% 
   mutate(Localidade = factor(Localidade)) %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Total",variable.name = "Modalidade") %>% 
@@ -272,35 +253,23 @@ Matriculas <- read_delim(file = "Dados/Matrículas.csv",
   mutate(Modalidade = factor(Modalidade), Rede = factor(Rede))
 
 #Abandono
-TaxaAbandono <- read_delim(file = "Dados/Taxa de Abandono.csv", 
-                           delim = ";", 
-                           escape_double = FALSE, 
-                           comment = "#", 
-                           col_types = cols(Ano = col_date(format = "%Y")), 
-                           locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                           trim_ws = TRUE) %>% 
+TaxaAbandono <- read_delim(file = "Dados/Taxa de Abandono.csv", delim = ";", escape_double = FALSE, 
+                           comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                           locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   mutate(Localidade = factor(Localidade)) %>% 
   rename(Abandono = `Taxa de Abandono`)
 
 #Reprovação
-TaxaReprovacao <- read_delim(file = "Dados/Taxa de Reprovação.csv", 
-                           delim = ";", 
-                           escape_double = FALSE, 
-                           comment = "#", 
-                           col_types = cols(Ano = col_date(format = "%Y")), 
-                           locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                           trim_ws = TRUE) %>% 
+TaxaReprovacao <- read_delim(file = "Dados/Taxa de Reprovação.csv", delim = ";", escape_double = FALSE, 
+                             comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                             locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   mutate(Localidade = factor(Localidade)) %>% 
   rename(Reprovação = `Taxa de Reprovação`)
 
 # Taxa de Alfabetizaçao
-TaxaAlfabetizacao <- read_delim(file = "Dados/Taxa de Alfabetização.csv", 
-                             delim = ";", 
-                             escape_double = FALSE, 
-                             comment = "#", 
-                             col_types = cols(Ano = col_date(format = "%Y")), 
-                             locale = locale(decimal_mark = ",", grouping_mark = "."), 
-                             trim_ws = TRUE) %>% 
+TaxaAlfabetizacao <- read_delim(file = "Dados/Taxa de Alfabetização.csv", delim = ";", escape_double = FALSE, 
+                                comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                                locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
   mutate(Localidade = factor(Localidade)) %>% 
   rename(Alfabetização = Alfabetizacao)
 
@@ -309,7 +278,8 @@ Taxas <- merge(TaxaAbandono,TaxaReprovacao,by = c("Localidade","Ano"),all = T) %
   reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Taxa") %>% 
   filter(!is.na(Valor))
 
-rm(Meso,Micro,MesoMicro,SEGPLAN,AguaEsgotoLigacoes,AguaEsgotoPercentual,Percentual,
-   TaxaAlfabetizacao, Estabelecimentos, TaxaAbandono,TaxaReprovacao,AdmitidosCAGED,DesligadosCAGED,Ligacoes)
+rm(Meso,Micro,MesoMicro,SEGPLAN,AguaEsgotoLigacoes,AguaEsgotoPercentual,Percentual,Agua,
+   TaxaAlfabetizacao,Estabelecimentos,TaxaAbandono,TaxaReprovacao,AdmitidosCAGED,
+   DesligadosCAGED,Ligacoes)
 
 save.image(file = "Dados/BDE.RData")
