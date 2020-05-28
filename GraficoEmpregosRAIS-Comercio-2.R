@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 level1 <- paste("Município de",LocRef$Localidade)
 tabela1 <- ComercioRAIS %>% 
   filter(!is.na(Vagas) & Localidade == LocRef$Localidade & Ano >= "2011-01-01" & Vagas > 0) %>% 
@@ -22,6 +20,7 @@ tabela3 <- ComercioRAIS %>%
   filter(!is.na(Vagas) & Ano >= "2011-01-01") %>% 
   select(Ano, Subsetor,Vagas) %>% 
   group_by(Ano,Subsetor) %>% 
+  
   summarise(Vagas = sum(Vagas)) %>% 
   mutate(Referencia = level3) %>% 
   select(Referencia,Ano,Subsetor,Vagas)
@@ -30,15 +29,15 @@ dados <- merge(tabela2,tabela1,all = TRUE) %>%
   merge(tabela3,all = TRUE) %>% 
   spread(Subsetor,Vagas) %>% 
   mutate(TaxaVA = Varejo/Atacado) %>% 
-  select(Referencia,Ano,TaxaVA)
-
-dados$Referencia <- factor(dados$Referencia,ordered = T,levels = c(level1,level2,level3))
+  select(Referencia,Ano,TaxaVA) %>% 
+  mutate(Referencia = factor(Referencia,ordered = T,levels = c(level1,level2,level3)))
 
 grafico <- dados %>% 
   ggplot(aes(x = Ano, y = TaxaVA)) +
   geom_line(aes(color = Referencia), stat="identity", size = 1) +
   scale_color_manual(values = mypallete) +
   theme_bw() +
+  scale_y_continuous(limits = c(0,NA)) +
   theme(legend.position="bottom",
         axis.text.x = element_text(angle = 90),
         strip.text = element_text(size = 6),

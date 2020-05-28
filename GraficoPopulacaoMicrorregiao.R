@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 Micro.Populacao <- PopulacaoProjecao %>% 
   merge(RegioesGoias) %>% 
   filter(Microrregiao == LocRef$Microrregiao & Ano == DataRef) %>% 

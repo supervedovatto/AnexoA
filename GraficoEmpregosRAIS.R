@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 level1 <- paste("Município de",LocRef$Localidade)
 tabela1 <- Emprego %>% 
   filter(!is.na(Empregos) & Localidade == LocRef$Localidade & Ano >= 2011 & Empregos > 0) %>% 

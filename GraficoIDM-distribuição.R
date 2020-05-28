@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 tabela1 <- IDM %>% 
   merge(RegioesGoias) %>% 
   filter(!is.na(Valor) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano == max(Ano)) %>% 

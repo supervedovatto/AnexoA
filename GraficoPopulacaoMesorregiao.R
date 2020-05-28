@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 grafico <- PopulacaoProjecao %>% 
   merge(RegioesGoias) %>% 
   filter(Mesorregiao == LocRef$Mesorregiao & Ano == DataRef & !is.na(Quantidade)) %>% 

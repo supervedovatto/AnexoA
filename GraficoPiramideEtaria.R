@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 AnosEscolha <- seq(ymd(max(PopulacaoProjecao$Ano)),ymd(min(PopulacaoProjecao$Ano)), by = '-4 year')
 
 Piramide <- PopulacaoProjecao %>%
@@ -27,5 +25,6 @@ grafico <- Piramide %>%
                   label = scales::percent(Proporcao,decimal.mark = ",",accuracy = 0.1)), size=3) +
     scale_y_continuous(labels = abs, limits = 1.1*max(Piramide$Quantidade) * c(-1,1)) +
     scale_fill_manual(values = mypallete) +
-    labs(y = "População",x="Faixa etária") +
+    labs(y = "População",x="Faixa etária",
+         caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
     facet_wrap(~Ano,ncol = 1,labeller = labeller(Ano = lubridate::year(AnosEscolha)))

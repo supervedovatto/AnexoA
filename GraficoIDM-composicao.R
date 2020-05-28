@@ -1,7 +1,5 @@
 ComposicaoIDM <- function(Eixo){
   
-  load(file = "Dados/POCV.RData")
-  
   Municipio <- IDM %>% 
     filter(!is.na(Valor) & Localidade == LocRef$Localidade & IDM == Eixo)
   

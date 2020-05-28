@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 level1 <- paste("Município de",LocRef$Localidade)
 tabela1 <- ServicosRAIS %>% 
   filter(!is.na(Vagas) & Localidade == LocRef$Localidade & Vagas > 0) %>% 

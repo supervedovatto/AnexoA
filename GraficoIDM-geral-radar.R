@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 level1 <- paste("Mun. de",LocRef$Localidade)
 tabela1 <- IDM %>% 
   filter(!is.na(Valor) & Localidade == LocRef$Localidade & Ano == max(Ano)) %>% 
