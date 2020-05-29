@@ -330,7 +330,6 @@ grafico
 
 ```{r}
 source(file = "TabelaUtilizacaoSalasProporcao.R")
-opts <- options(knitr.kable.NA = "")
 kable(x = tabela,
       format = "latex",
       booktabs = TRUE,
@@ -342,7 +341,6 @@ kable(x = tabela,
 
 ```{r}
 source(file = "TabelaSalasExistentes.R")
-opts <- options(knitr.kable.NA = "")
 kable(x = tabela,
       format = "latex",
       booktabs = TRUE,
@@ -355,6 +353,22 @@ kable(x = tabela,
 ```{r,fig.cap=paste("Evolução das Taxas de Reprovação e Abandono escolar no Estado de Goiás (boxplots) e no município de",LocRef$Localidade,"(linha) nos últimos anos"),fig.asp = 1.25}
 source(file = "GraficoTaxasRepAban2.R")
 grafico
+```
+
+```{r}
+source(file = "TabelaMatriculas.R")
+Referencias <- unique(tabela$Referencia)
+tabela %>%
+  select(-Referencia) %>% 
+  mutate_all(linebreak) %>%
+  kable(format = "latex",
+        booktabs = TRUE,
+        caption = paste("Número de matrículas nas diferentes modalidades e redes de ensino no Município de",LocRef$Localidade,"na Região de Planejamento",LocRef$RPSEGPLAN,"e no Estado de Goiás.")) %>% 
+    kable_styling(latex_options = c("striped", "hold_position")) %>% 
+    pack_rows(Referencias[1], 1, 3) %>%
+    pack_rows(Referencias[2], 4, 6) %>% 
+    pack_rows(Referencias[3], 7, 9) %>% 
+  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
 ```
 
 ```{r,fig.cap=paste("Distribuição do IDEB",lubridate::year(max(IDEB$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
@@ -445,11 +459,6 @@ kable(x = tabela,
   row_spec(0, angle = 90) %>% 
   footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.", footnote_as_chunk = T, threeparttable = T)
 ```
-
-```{r}
-
-```
-
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
 

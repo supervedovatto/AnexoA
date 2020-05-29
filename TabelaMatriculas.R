@@ -1,5 +1,3 @@
-load(file = "Dados/POCV.RData")
-
 level1 <- paste("Município de",LocRef$Localidade)
 tabela1 <- Matriculas %>% 
   filter(Localidade == LocRef$Localidade & Ano == max(Ano)) %>% 
@@ -29,6 +27,6 @@ tabela3 <- Matriculas %>%
 
 tabela <- rbind(tabela1,tabela2,tabela3) %>% 
   select(Referencia,Modalidade,Rede,Total) %>% 
-  spread(Referencia,Total)
+  spread(Rede,Total)
 
 rm(tabela1,tabela2,tabela3,level1,level2,level3)
