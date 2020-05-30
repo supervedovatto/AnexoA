@@ -3,6 +3,10 @@ rm(list = ls())
 # Mesoregiões
 library(readxl)
 library(reshape2)
+library(sidrar)
+library(dbplyr)
+library(tidyverse)
+library(raster)
 
 Meso <- tibble(read_delim("Dados/MesorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(Meso) <- c("Mesorregiao","Microrregiao")
@@ -10,22 +14,40 @@ Meso$Mesorregiao <- factor(Meso$Mesorregiao)
 Meso$Microrregiao <- factor(Meso$Microrregiao)
 
 # Microrregiões
-Micro <- tibble(read_delim("Dados/MicrorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
-colnames(Micro) <- c("Microrregiao","Localidade")
-Micro$Localidade <- factor(Micro$Localidade)
-Micro$Microrregiao <- factor(Micro$Microrregiao)
+Micro <- read_delim("Dados/MicrorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE) %>% 
+  tibble() %>% 
+  transmute(Microrregiao = factor(MicrorregiaoIBGE),Localidade = factor(Localidade)) %>% 
+  arrange(Localidade)
+  
+#Códigos dos Municípios no IBGE
+tabela <- get_sidra(api = "/t/6579/n6/all")
+MunicipiosIBGE <- tabela %>% 
+  filter(Ano == 2019) %>% 
+  separate(`Município`,into = c("Municipio","UF"),sep = " - ") %>% 
+  mutate(CD_GEOCMU = `Município (Código)`) %>% 
+  filter(UF == "GO") %>% 
+  select(CD_GEOCMU,Municipio) %>% 
+  arrange(Municipio)
+
+Micro$CD_GEOCMU <- MunicipiosIBGE$CD_GEOCMU
 
 # Merge das Micro e Macrorregiões 
 MesoMicro <- merge(Meso,Micro,by = "Microrregiao",all = TRUE)
 
 # Regiões de PLanejamento SEGPLAN
-SEGPLAN <- tibble(read_delim("Dados/RegiõesSEGPLAN.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
+SEGPLAN <- tibble(read_delim("Dados/RegiõesSEGPLAN.csv", delim = ";", 
+                             escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(SEGPLAN) <- c("RPSEGPLAN","Localidade")
 SEGPLAN$Localidade <- factor(SEGPLAN$Localidade)
 SEGPLAN$RPSEGPLAN <- factor(SEGPLAN$RPSEGPLAN)
 
 # Merge Regiões  e SEGPLAN
 RegioesGoias <- merge(MesoMicro,SEGPLAN,by = "Localidade",all = TRUE)
+
+
+# Carregando o arquivo com os dados do mapa de Goiás
+MapaGoias <- shapefile("go_municipios/52MUE250GC_SIR.shp") %>% 
+  merge(RegioesGoias,by="CD_GEOCMU", all.x=T)
 
 # Area Territorial
 Area <- tibble(read_delim("Dados/Área Territorial.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
