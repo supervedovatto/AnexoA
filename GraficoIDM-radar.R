@@ -1,7 +1,5 @@
 RadarIDM <- function(Eixo) {
   
-  load(file = "Dados/POCV.RData")
-  
   dados <- IDM %>% 
     mutate(Variável = fct_recode(Variável,
                                  "Equilíbrio Orçamentário" = "Equilíbrio Orçamentário do Município",
@@ -33,29 +31,32 @@ RadarIDM <- function(Eixo) {
     merge(RegioesGoias) %>% 
     filter(!is.na(Valor) & RPSEGPLAN == LocRef$RPSEGPLAN & Ano == max(Ano) & IDM == Eixo) %>% 
     group_by(Localidade,Variável) %>% 
-    summarise(Valor = mean(Valor,rm.na = TRUE)) %>% 
+    summarise(Valor = mean(Valor)) %>% 
     group_by(Variável) %>% 
-    summarise(Valor = mean(Valor,rm.na = TRUE)) %>% 
+    summarise(Valor = mean(Valor)) %>% 
     mutate(Referencia = level2)
   
   level3 <- "Estado de Goiás"
   tabela3 <- dados %>% 
     filter(!is.na(Valor) & Ano == max(Ano) & IDM == Eixo) %>% 
     group_by(Localidade,Variável) %>% 
-    summarise(Valor = mean(Valor,rm.na = TRUE)) %>% 
+    summarise(Valor = mean(Valor)) %>% 
     group_by(Variável) %>% 
-    summarise(Valor = mean(Valor,rm.na = TRUE)) %>% 
+    summarise(Valor = mean(Valor)) %>% 
     mutate(Referencia = level3)
   
   rbind(tabela1,tabela2,tabela3) %>% 
     mutate(Referencia = factor(Referencia,ordered = T,levels = c(level1,level2,level3))) %>% 
     dcast(Referencia~Variável,value.var = "Valor") %>% 
-    ggradar(grid.max = 10,values.radar = "",
+    ggradar(grid.max = 10,  grid.mid = 5, grid.min = 0,
+            grid.label.size = 5,
+            values.radar = c(0,5,10),
             legend.position = "bottom",
-            legend.text.size = 8,
+            legend.text.size = 6,
+            axis.label.offset = 1.1,
             group.line.width = 0.5,
-            group.point.size = 3,
-            axis.label.size = 3) +
-    labs(caption = "Fonte: BDE/IMB
-                    Acesso: 19/03/2020")
+            group.point.size = 2,
+            axis.label.size = 2.5) +
+    theme(plot.caption = element_text(size = 8)) +
+    labs(caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.")
 }

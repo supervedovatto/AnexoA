@@ -27,6 +27,7 @@ library(kableExtra)
 library(ggradar)
 library(forcats)
 library(lubridate)
+library(raster)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -38,7 +39,11 @@ rm(list = ls())
 
 mypallete <- c("#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22AA99","#AAAA11","#6633CC","#E67300","#8B0707","#651067","#329262","#5574A6","#3B3EAC")
 
-options(scipen=10000,big.mark=".",decimal.mark=",",scientific=FALSE)
+options(scipen=10000,
+        big.mark=".",
+        decimal.mark=",",
+        scientific=FALSE,
+        dplyr.summarise.inform = FALSE)
 
 #Para que o relatório seja gerado basta informar a cidade e o ano de referẽncia abaixo.
 #Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
@@ -67,7 +72,7 @@ Top5 <- PopulacaoProjecao %>%
   merge(RegioesGoias) %>% 
   filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano == max(PopulacaoProjecao$Ano)) %>% 
   group_by(Localidade) %>% 
-  summarise(Populacao = sum(Quantidade)) %>% 
+  summarise(Populacao = sum(Quantidade),groups="drop") %>% 
   mutate(ranking = rank(desc(Populacao))) %>% 
   arrange(ranking) %>% 
   filter(ranking<=5)
@@ -100,7 +105,7 @@ A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificaç
 
 ### Mesorregião `r LocRef$Mesorregiao`
 
-```{r}
+```{r,warning = FALSE}
 source(file = "AnaliseMesorregiao.R")
 ```
 
@@ -373,12 +378,12 @@ tabela %>%
 ```
 
 ```{r,fig.cap=paste("Distribuição do IDEB",lubridate::year(max(IDEB$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
-source(file = "GraficoIDEB-2.R")
+source(file = "GraficoIDEB-Distribuição.R")
 grafico
 ```
 
 ```{r,fig.cap=paste("Evolução do IDEB no Estado de Goiás (boxplot) e no Município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.25}
-source(file = "GraficoIDEB-3.R")
+source(file = "GraficoIDEB-Boxplots.R")
 grafico
 ```
 

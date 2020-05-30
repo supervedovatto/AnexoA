@@ -15,12 +15,11 @@ tabela2 <- IDM %>%
 
 grafico <- rbind(tabela1,tabela2) %>% 
   ggplot(aes(x=Valor, fill=Referencia)) +
+    facet_wrap(~IDM, ncol = 2) +
     geom_density(alpha=0.5)+
-    # geom_vline(data=medias, aes(xintercept=IDEBmedio, fill=Anos),linetype="dashed") +
-    # geom_text(data=medias, aes(x=IDEBmedio, label=paste("Média:",format(IDEBmedio,decimal.mark = ",")), y=1.2),angle=90, vjust = 1.2, text=element_text(size=8))+
     scale_fill_manual(values = mypallete) +
     theme_bw() +
     theme(legend.position="bottom",legend.title = element_blank()) +
     labs(y = "Densidade", x = "IDM",
-         caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.") +
-    facet_wrap(~IDM, ncol = 2)
+         caption = "Fonte: Elaborado pelo núcleo de base do OMT/GYN 
+         a partir de dados do BDE/IMB, com acesso em 19/03/2020.")
