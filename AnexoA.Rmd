@@ -85,6 +85,7 @@ Nesse relatório fazemos alguns estudos complementares ao que já se encontra di
 
   - [Atlas Brasil - Região Metropolitana de Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_rm/goiania)
   - [Atlas Brasil - Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_m/goiania_go)
+  - [Cidades - IBGE](https://cidades.ibge.gov.br)
   
 ## O Estudo
 
