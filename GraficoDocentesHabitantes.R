@@ -1,4 +1,4 @@
-grafico <- dados <- PopulacaoProjecao %>% 
+grafico <- PopulacaoProjecao %>% 
   merge(RegioesGoias) %>% 
   group_by(Localidade,Ano) %>% 
   summarise(Populacao =  sum(Quantidade)) %>% 
