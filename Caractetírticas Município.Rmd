@@ -1,4 +1,0 @@
-## Características do Município de `r LocRef$Localicade`
-
-A cidade de `r LocRef$Localidade` possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoLocal)` habitantes e uma área territorial de `r myformat(AreaLocal)` km², deste modo a densidade populacional atual fica projetada em `r myformat(PopulacaoLocal/AreaLocal)` hab/km².
-A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificação do IBGE, na *Mesorregião `r LocRef$Mesorregiao`* e na *Microrregião de `r LocRef$Microrregiao`* e segundo a SEGPLAN na *Região de Planejamento `r LocRef$RPSEGPLAN`*.
