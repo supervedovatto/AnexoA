@@ -113,6 +113,11 @@ source(file = "AnaliseMesorregiao.R")
 A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
 Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
 
+```{r,fig.cap="Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
+source(file = "MapaMesorregiões.R")
+MapaMeso
+```
+
 ```{r,fig.cap=paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao)}
 source(file = "GraficoPopulacaoMesorregiao.R")
 grafico
@@ -161,8 +166,18 @@ kable_styling(latex_options = c("striped", "hold_position")) %>%
 
 ### Região de Planejamento `r LocRef$RPSEGPLAN`
 
+```{r,fig.cap="Mapa das Regiões de PLanejamento do Estado de Goiás segundo a SEGPLAN"}
+source(file = "MapaRegiõesPlanejamento.R")
+MapaSEGPLAN
+```
+
 ```{r}
 source(file = "AnaliseRegiaoPlanejamento.R")
+```
+
+```{r,fig.cap="Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
+source(file = "MapaMicrorregiãoRPSEGPLAN.R")
+grafico
 ```
 
 A *Região de Planejamento `r LocRef$RPSEGPLAN`*, definida pela SEGPLAN, compreende um total `r nrow(LocalSEGPLAN)` cidades sendo as cinco cidades mais populosas `r head(RPSEGPLANPop$Localidade)`.
