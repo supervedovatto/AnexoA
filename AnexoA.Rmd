@@ -27,7 +27,8 @@ library(kableExtra)
 library(ggradar)
 library(forcats)
 library(lubridate)
-library(raster)
+library(geobr)
+library(ggpubr)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -72,7 +73,7 @@ Top5 <- PopulacaoProjecao %>%
   merge(RegioesGoias) %>% 
   filter(RPSEGPLAN == LocRef$RPSEGPLAN & Ano == max(PopulacaoProjecao$Ano)) %>% 
   group_by(Localidade) %>% 
-  summarise(Populacao = sum(Quantidade),groups="drop") %>% 
+  summarise(Populacao = sum(Quantidade)) %>% 
   mutate(ranking = rank(desc(Populacao))) %>% 
   arrange(ranking) %>% 
   filter(ranking<=5)
