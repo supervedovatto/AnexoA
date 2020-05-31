@@ -6,7 +6,6 @@ library(reshape2)
 library(sidrar)
 library(dbplyr)
 library(tidyverse)
-library(raster)
 
 Meso <- tibble(read_delim("Dados/MesorregiõesIBGE.csv", delim = ";", escape_double = FALSE, comment = "#", trim_ws = TRUE))
 colnames(Meso) <- c("Mesorregiao","Microrregiao")
@@ -24,12 +23,12 @@ tabela <- get_sidra(api = "/t/6579/n6/all")
 MunicipiosIBGE <- tabela %>% 
   filter(Ano == 2019) %>% 
   separate(`Município`,into = c("Municipio","UF"),sep = " - ") %>% 
-  mutate(CD_GEOCMU = `Município (Código)`) %>% 
+  mutate(code_muni = `Município (Código)`) %>% 
   filter(UF == "GO") %>% 
-  select(CD_GEOCMU,Municipio) %>% 
+  select(code_muni,Municipio) %>% 
   arrange(Municipio)
 
-Micro$CD_GEOCMU <- MunicipiosIBGE$CD_GEOCMU
+Micro$code_muni <- MunicipiosIBGE$code_muni
 
 # Merge das Micro e Macrorregiões 
 MesoMicro <- merge(Meso,Micro,by = "Microrregiao",all = TRUE)
@@ -44,10 +43,9 @@ SEGPLAN$RPSEGPLAN <- factor(SEGPLAN$RPSEGPLAN)
 # Merge Regiões  e SEGPLAN
 RegioesGoias <- merge(MesoMicro,SEGPLAN,by = "Localidade",all = TRUE)
 
-
 # Carregando o arquivo com os dados do mapa de Goiás
-MapaGoias <- shapefile("go_municipios/52MUE250GC_SIR.shp") %>% 
-  merge(RegioesGoias,by="CD_GEOCMU", all.x=T)
+MapaGoias <- read_municipality(code_muni="GO", year=2018) %>% 
+  merge(RegioesGoias,by="code_muni", all.x=T)
 
 # Area Territorial
 Area <- tibble(read_delim("Dados/Área Territorial.csv",delim = ";", escape_double = FALSE, comment = "#", col_types = cols(Ano = col_date(format = "%Y")), locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE))
@@ -299,6 +297,24 @@ Taxas <- merge(TaxaAbandono,TaxaReprovacao,by = c("Localidade","Ano"),all = T) %
   merge(TaxaAlfabetizacao,by = c("Localidade","Ano"),all = T) %>% 
   reshape2::melt(id.vars = c("Localidade","Ano"),value.name = "Valor",variable.name = "Taxa") %>% 
   filter(!is.na(Valor))
+
+Gini <- read_delim(file = "Dados/Gini.csv", delim = "\t", escape_double = FALSE, 
+                   comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                   locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade))
+
+IDH <- read_delim(file = "Dados/IDHM.csv", delim = ";", escape_double = FALSE, 
+                   comment = "#", col_types = cols(Ano = col_date(format = "%Y")), 
+                   locale = locale(decimal_mark = ",", grouping_mark = "."), trim_ws = TRUE) %>% 
+  mutate(Localidade = factor(Localidade))
+
+# Produto Interno Bruto a preços correntes
+PIBpc <- get_sidra(x = 5938, geo = "City", variable = 37) %>% 
+  separate(`Município`,into = c("Municipio","UF"),sep = " - ") %>% 
+  mutate(code_muni = `Município (Código)`) %>% 
+  filter(UF == "GO") %>% 
+  select(code_muni,Municipio,Ano,Valor) %>% 
+  arrange(Municipio)
 
 rm(Meso,Micro,MesoMicro,SEGPLAN,AguaEsgotoLigacoes,AguaEsgotoPercentual,Percentual,Agua,
    TaxaAlfabetizacao,Estabelecimentos,TaxaAbandono,TaxaReprovacao,AdmitidosCAGED,
