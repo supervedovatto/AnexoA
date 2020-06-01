@@ -50,7 +50,7 @@ options(scipen=10000,
 #Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
 
 #Carrega todos os banco de dados necessários
-load(file = "Dados/BDE.RData")
+load(file = "Datasets/BDE.RData")
 
 #Para que o relatório seja gerado basta informar a cidade e o ano de referẽncia abaixo.
 #Todas as demais estatísticas, gráficos e tabelas serão gerados a partir dessas informações.
@@ -82,7 +82,7 @@ MunicipiosSEGPLANRef <- Top5$Localidade
 
 myformat <- function(x) format(x,big.mark=".",decimal.mark=",",scientific=FALSE)
 
-save.image(file = "Dados/POCV.RData")
+save.image(file = "Datasets/POCV.RData")
 ```
 
 # Apresentação
@@ -107,77 +107,69 @@ A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificaç
 ### Mesorregião `r LocRef$Mesorregiao`
 
 ```{r,warning = FALSE}
-source(file = "AnaliseMesorregiao.R")
+source(file = "Analysis/Mesorregiao.R")
 ```
 
 A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
 Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
 
 ```{r,fig.cap="Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
-source(file = "MapaMesorregiões.R")
-MapaMeso
+source(file = "Maps/Mesorregiões.R",print.eval = TRUE)
 ```
 
 ```{r,fig.cap=paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao)}
-source(file = "GraficoPopulacaoMesorregiao.R")
-grafico
+source(file = "Maps/Microrregiões.R")
+source(file = "Barplots/PopulaçãoMicrorregião.R")
+ArranjoMicrorregiao <- ggarrange(
+  MapsMicrorregioes,
+  BarplotsPopulacaoMicrorregiao,
+  common.legend = TRUE,
+  align = "v",
+  legend = "bottom"
+)
 ```
 
 ```{r}
-source(file = "TabelaPopulacaoMesoregiao.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Microrregião","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade Populacional da Mesorregião de",LocRef$Mesorregiao)) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/PopulacaoMesoregiao.R")
+TablePopulacaoMesorregiao
 ```
 
 ```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
-source(file = "GraficoMunicipiosMicrorregioes.R")
-grafico
+source(file = "Barplots/MunicipiosMicrorregioes.R")
+BarplotMunicipiosMicrorregiao
 ```
 
 ### Microrregião de `r LocRef$Microrregiao`
 
 ```{r}
-source(file = "AnaliseMicrorregiao.R")
+source(file = "Analysis/Microrregiao.R")
 ```
 
 A *Microrregião de `r LocRef$Microrregiao`*, possui em `r AnoRef` uma população projetada em `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r length(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
 Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
 
 ```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
-source(file = "GraficoPopulacaoMicrorregiao.R")
-grafico
+source(file = "Piecharts/PopulacaoMicrorregiao.R",print.eval = TRUE)
 ```
 
 ```{r}
-source(file = "TabelaPopulacaoMicrorregiao.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade Populacional da Microrregião de",LocRef$Microrregiao)) %>% 
-kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/PopulacaoMicrorregiao.R",print.eval = TRUE)
 ```
 
 ### Região de Planejamento `r LocRef$RPSEGPLAN`
 
-```{r,fig.cap="Mapa das Regiões de PLanejamento do Estado de Goiás segundo a SEGPLAN"}
-source(file = "MapaRegiõesPlanejamento.R")
-MapaSEGPLAN
+```{r,fig.cap="Mapa das Regiões de Planejamento do Estado de Goiás segundo a SEGPLAN"}
+source(file = "Maps/RegiõesPlanejamento.R",print.eval = TRUE)
 ```
 
 ```{r}
-source(file = "AnaliseRegiaoPlanejamento.R")
+source(file = "Analysis/RegiaoPlanejamento.R")
 ```
 
-```{r,fig.cap="Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
-source(file = "MapaMicrorregiãoRPSEGPLAN.R")
-grafico
+```{r,fig.cap="Mapa das cidades Mesorregiões do Estado de Goiás segundo o IBGE."}
+source(file = "Maps/RPSEGPLANCidades.R")
+source(file = "Maps/MicrorregiãoCidades.R")
+ggarrange(MicrorregiaoCidades, RPSEGPLANcidades, align = "h")
 ```
 
 A *Região de Planejamento `r LocRef$RPSEGPLAN`*, definida pela SEGPLAN, compreende um total `r nrow(LocalSEGPLAN)` cidades sendo as cinco cidades mais populosas `r head(RPSEGPLANPop$Localidade)`.
@@ -185,37 +177,24 @@ Os municípios menos populosos são `r tail(RPSEGPLANPop$Localidade)`.
 A população da *Região de Planejamento `r LocRef$RPSEGPLAN`* em `r AnoRef` é projetada em `r myformat(PopulacaoSEGPLAN)` habitantes e sua área territorial é `r myformat(AreaSEGPLAN)` km².
 
 ```{r}
-source(file = "TabelaPopulacaoRPSEGPLAN.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Região de Planejamento","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = "Densidade populacional em cada região de planejamento definida pela SEGPLAN") %>% 
-kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/PopulacaoRPSEGPLAN.R")
+TablePopulacaoRPSEGPLAN
 ```
 
 ```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
-source(file = "GraficoPopulacaoSEGPLAN.R")
-grafico
+source(file = "Piecharts/PopulacaoSEGPLAN.R")
+PieChartPopulacaoSEGPLAN
 ```
 
 Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
 
 ```{r}
-source(file = "TabelaPopulacaoCidadesRPSEGPLAN.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Cidade","População (hab)","Área (km²)","Densidade Populacional (hab/km²)"),
-      caption = paste("Densidade populacional em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)) %>% 
-kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/PopulacaoCidadesRPSEGPLAN.R")
+TableCidadesRPSEGPLAN
 ```
 
 ```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
-source(file = "GraficoPopulacaoCidadesSEGPLAN.R")
-grafico
+source(file = "Piecharts/PopulacaoCidadesSEGPLAN.R",print.eval = TRUE)
 ```
 
 # Aspectos Econômicos
@@ -225,24 +204,11 @@ grafico
 ## Caracterização Geral das Profissões no Município
 
 ```{r}
-source(file = "TabelaEmpregosCAGED.R")
-tabela %>% 
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Saldo acumulado da geração de empregos por setor entre",max(Emprego$Ano)-5,"e",max(Emprego$Ano),"na Região de Planejamento",LocRef$RPSEGPLAN,"segundo a CAGED.")) %>%
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "25em") %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
-```
-
-```{r,fig.cap=paste("Total de postos de trabalho por setor nos últimos anos em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no Município de",LocRef$Localidade,"segundo dados da RAIS."),fig.asp = 1.618}
-source(file = "GraficoEmpregosRAIS.R")
-grafico
+source(file = "Tables/EmpregosCAGED.R",print.eval = TRUE)
 ```
 
 ```{r,fig.cap=paste("Admitidos e Desligados por setor nos últimos 10 anos na Região de Planejamento",LocRef$RPSEGPLAN,"segundo dados da CAGED."),fig.asp = 1.618}
-source(file = "GraficoEmpregosCAGED.R")
-grafico
+source(file = "Lines/EmpregosCAGED.R",print.eval = TRUE)
 ```
 Segundo a Relação Anual das Informações Sociais (RAIS) elaborada pelo Ministério do Trabalho e Emprego (MTE), o número de empregos (postos de trabalho) corresponde ao total de vínculos empregatícios ativos, é diferente do número de pessoas empregadas, pois um mesmo indivíduo pode estar ocupando mais de um posto de trabalho na data de referência.
 Como vínculo empregatício entende-se a relação de emprego mantida com o empregador durante o ano-base e que se estabelece sempre que ocorrer trabalho remunerado com submissão hierárquica ao empregador e horário pré estabelecido por este.
@@ -252,64 +218,47 @@ Adicionalmente a RAIS levanta dados sobre vínculos de trabalhador avulso, traba
 O total de empregos a soma do número de empregos nos setores: *`r head(levels(Emprego$Setor),-1)`* e *`r tail(levels(Emprego$Setor),1)`*.
 
 ```{r, results='asis'}
-source(file = "TabelaEmpregosRAIS-1.R")
-tabela %>%
-  mutate_all(linebreak) %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Total de empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  column_spec(1, width = "20em") %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/EmpregosRAIS-1.R")
+TableEmpregoRais1 
 ```
 
 O Rendimento médio do Setor no municipio de Goiânia pode ser Verificado na tabela à seguir.
 Os dados foram obtidos diretamente da plataforma Mauro Borges.
 
 ```{r, results='asis'}
-source(file = "TabelaEmpregosRAIS-2.R")
-tabela %>%
-  mutate_all(linebreak) %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Rendimento salarial médio (em reais) dos empregos por setor, entre",max(Emprego$Ano)-4,"e",max(Emprego$Ano),"no Município de",LocRef$Localidade,"segundo a RAIS.")) %>% 
-    kable_styling("striped", full_width = F) %>%
-    pack_rows(paste("Município de",LocRef$Localidade), 1, 8) %>%
-    pack_rows(paste("Região de Planejamento",LocRef$RPSEGPLAN), 9, 16) %>% 
-    pack_rows("Estado de Goiás", 17, 24) %>% 
-  column_spec(1, width = "20em") %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/EmpregosRAIS-2.R")
+TableEmpregoRais2 
 ```
 
 ```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
-source(file = "GraficoRendimentoMedioRAIS.R")
-grafico
+source(file = "Lines/RendimentoMedioRAIS.R")
+LineRendimentoMedioRAIS
 ```
 
 As taxas para o setor da *Administração Pública Direta e Indireta* são muito pequenas quando comparadas com os demais setores devido à estabilidade no serviço público.
 ```{r,fig.cap=paste("Comparativo da taxa de aumento do número de postos de trabalho por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
-source(file = "GraficoSaldoRelativoPorVagasCAGEDxRAIS.R")
-grafico
+source(file = "Lines/SaldoRelativoPorVagasCAGEDxRAIS.R")
+LineSaldoRelaticoPorVagas
 ```
 
 ```{r,fig.cap=paste("Número de postos de trabalho nos subsetores do comércio em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
-source(file = "GraficoEmpregosRAIS-Comercio.R")
-grafico
+source(file = "Barplots/EmpregosRAIS-Comercio.R")
+BarplotsEmpregosRAISComercio
 ```
 
 ```{r,fig.cap=paste("Número de postos de trabalho no comercio varejista para cada posto no atacado em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 0.618}
-source(file = "GraficoEmpregosRAIS-Comercio-2.R")
-grafico
+source(file = "Lines/EmpregosRAIS-Comercio.R")
+LineEmpregosRAISComercio
 ```
 
 ```{r,fig.cap=paste("Número de postos de trabalho nos subsetores de Serviços em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
-source(file = "GraficoEmpregosRAIS-Servicos.R")
-grafico
+source(file = "Barplots/EmpregosRAIS-Servicos.R")
+BarplotEmpregosRAISServicos
 ```
 
 ```{r,fig.cap=paste("Número de postos de trabalho nos subsetores da Indústria de Transformação em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
-source(file = "GraficoEmpregosRAIS-Transformacao.R")
-grafico
+source(file = "Barplots/EmpregosRAIS-Transformacao.R")
+BarplotEmpregosRAISTransformacao
 ```
 
 ### IDM - Educação
@@ -319,88 +268,62 @@ grafico
 # Aspectos Demográficos e Afins
 
 ```{r,fig.cap=paste("Percentual da população atendida por serviços de água e esgoto em",LocRef$Localidade)}
-source(file = "GraficoAguaEsgoto.R")
-grafico
+source(file = "Lines/AguaEsgoto.R")
+LineAguaEsgoto
 ```
 
 A pirâmide etária da cidade de goiânia baseada na população projetada para 2020 é apresentada no gráfico à seguir:
 
 ```{r,fig.cap=paste("Pirâmide etária da cidade de",LocRef$Localidade),fig.asp = 1.618}
-source(file = "GraficoPiramideEtaria.R")
-grafico
+source(file = "Piramids/PiramideEtaria.R")
+PiramideEtaria
 ```
 
 # Aspectos Educacionais
 
 ```{r,fig.cap=paste("Número de estabelescimentos de ensino infantil, fundamental e médio em",LocRef$Localidade,"por rede de ensino nos últimos anos")}
-source(file = "GraficoEstabelescimentos.R")
-grafico
+source(file = "Lines/Estabelescimentos.R")
+LinesEstabelescimentos
 ```
 
 Corresponde ao total de pessoas em atividades docentes em sala de aula no ensino pré-escolar, no ensino fundamental e no ensino médio.
 O mesmo docente pode ministrar aulas em redes e municípios diferentes.
 Os dados são referentes à `r max(Docentes$Ano)`.
 ```{r,fig.cap=paste("Número de docentes nas redes municipal, estadual, federal e particular atuando nos ensinos pré-escolar, fundamental e médio em",LocRef$Localidade,"para cada 100 mil habitantes.")}
-source(file = "GraficoDocentesHabitantes.R")
-grafico
+source(file = "Lines/DocentesHabitantes.R")
+LinesDocentesHabitantes
 ```
 
 ```{r,fig.cap=paste("Percentual de utilização das salas de aula disponíveis em",LocRef$Localidade,"nos últimos anos")}
-source(file = "GraficoUtilizacaoSalas.R")
-grafico
+source(file = "Lines/UtilizacaoSalas.R")
+LinesUtilizacaoSalas
 ```
 
 ```{r}
-source(file = "TabelaUtilizacaoSalasProporcao.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Cidade","Federal (%)","Estadual (%)","Municipal (%)","Particular (%)"),
-      caption = paste("Percentual de utilização das salas de aula nas cidades da Região de Planejamento",LocRef$RPSEGPLAN,"em",max(SalasAula$Ano),"nas diferentes redes de ensino")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/UtilizacaoSalasProporcao.R")
+TableUtilizacaoSalasProporcao
 ```
 
 ```{r}
-source(file = "TabelaSalasExistentes.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      col.names = c("Município","Federal","Estadual","Municipal","Particular","Total"),
-      caption = paste("Salas de aulas disponíveis nos municípios na Região de Planejamento de",LocRef$RPSEGPLAN,"em",max(SalasAula$Ano))) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/SalasExistentes.R")
+TabelaSalasExistentes
 ```
 
 ```{r,fig.cap=paste("Evolução das Taxas de Reprovação e Abandono escolar no Estado de Goiás (boxplots) e no município de",LocRef$Localidade,"(linha) nos últimos anos"),fig.asp = 1.25}
-source(file = "GraficoTaxasRepAban2.R")
-grafico
+source(file = "Lines/TaxasReprovacaoAbandono2.R",print.eval = TRUE)
 ```
 
 ```{r}
-source(file = "TabelaMatriculas.R")
-Referencias <- unique(tabela$Referencia)
-tabela %>%
-  select(-Referencia) %>% 
-  mutate_all(linebreak) %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        caption = paste("Número de matrículas nas diferentes modalidades e redes de ensino no Município de",LocRef$Localidade,"na Região de Planejamento",LocRef$RPSEGPLAN,"e no Estado de Goiás.")) %>% 
-    kable_styling(latex_options = c("striped", "hold_position")) %>% 
-    pack_rows(Referencias[1], 1, 3) %>%
-    pack_rows(Referencias[2], 4, 6) %>% 
-    pack_rows(Referencias[3], 7, 9) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.",footnote_as_chunk = T,threeparttable = T)
+source(file = "Tables/Matriculas.R")
+TabelaMatriculas
 ```
 
 ```{r,fig.cap=paste("Distribuição do IDEB",lubridate::year(max(IDEB$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
-source(file = "GraficoIDEB-Distribuição.R")
-grafico
+source(file = "Densities/IDEB.R",print.eval = TRUE)
 ```
 
 ```{r,fig.cap=paste("Evolução do IDEB no Estado de Goiás (boxplot) e no Município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1.25}
-source(file = "GraficoIDEB-Boxplots.R")
-grafico
+source(file = "Boxplots/IDEB.R",print.eval = TRUE)
 ```
 
 Outras informações sobre o IDM podem ser obtidas pelo link:
@@ -409,8 +332,8 @@ Outras informações sobre o IDM podem ser obtidas pelo link:
  - [IDM 2016](https://www.imb.go.gov.br/files/docs/publicacoes/idm/idm2016.pdf)
  
 ```{r}
-source(file = "GraficoIDM-composicao.R")
-source(file = "GraficoIDM-radar.R")
+source(file = "Functions/ComposicaoIDM.R")
+source(file = "Functions/RadarIDM.R")
 ```
 
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Educação para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
@@ -462,24 +385,15 @@ RadarIDM("Segurança")
 ```
 
 ```{r,fig.cap=paste("Distribuição por setor do IDM",lubridate::year(max(IDM$Ano)),"na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
-source(file = "GraficoIDM-distribuição.R")
-grafico
+source(file = "Densities/IDM.R",print.eval = TRUE)
 ```
 
 ```{r,fig.cap=paste("IDM",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade," e IDM mediano na Região de Planejamento",LocRef$RPSEGPLAN,"e em Goiás."),fig.asp = 1}
-source(file = "GraficoIDM-geral-radar.R")
-grafico
+source(file = "Radars/IDMGeral.R",print.eval = TRUE)
 ```
 
 ```{r}
-source(file = "TabelaIDM-radar.R")
-kable(x = tabela,
-      format = "latex",
-      booktabs = TRUE,
-      caption = paste("IDMs",lubridate::year(max(IDM$Ano)),"no Município de",LocRef$Localidade,"e IDMs médios dos nunicípios da Região de Planejamento",LocRef$RPSEGPLAN,"e de Goiás.")) %>% 
-  kable_styling(latex_options = c("striped", "hold_position")) %>% 
-  row_spec(0, angle = 90) %>% 
-  footnote(general_title = "Fonte:", general = "Elaborado pelo núcleo de base do OMT/GYN a partir de dados do BDE/IMB, com acesso em 19/03/2020.", footnote_as_chunk = T, threeparttable = T)
+source(file = "Tables/IDM-radar.R",print.eval = TRUE)
 ```
 
 ## Dados Institucionais: Atuação do Câmpus no seu território

@@ -4,6 +4,6 @@
 *.log
 *.Rproj
 *.RData
-Outros\ Dados/*
+Other\ Datasets/*
 .Rproj.user
 .Rhistory
