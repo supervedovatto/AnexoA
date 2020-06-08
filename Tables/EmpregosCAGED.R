@@ -1,4 +1,4 @@
-Emprego %>%
+tabela <- Emprego %>%
   filter(RPSEGPLAN == LocRef$RPSEGPLAN &
            Ano >= max(Emprego$Ano) - 5) %>%
   select(Setor, Admitidos, Desligados) %>%

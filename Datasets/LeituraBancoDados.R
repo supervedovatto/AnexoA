@@ -642,24 +642,30 @@ Gini <-
 IDH <-
   read_delim(
     file = "Datasets/IDHM.csv",
-    delim = ";",
+    delim = "\t",
     escape_double = FALSE,
     comment = "#",
     col_types = cols(Ano = col_date(format = "%Y")),
     locale = locale(decimal_mark = ",", grouping_mark = "."),
     trim_ws = TRUE
   ) %>%
-  mutate(Localidade = factor(Localidade))
+  mutate(Localidade = factor(Localidade)) %>% 
+  reshape2::melt(
+    id.vars = c("Localidade", "Ano"),
+    value.name = "Valor",
+    variable.name = "IDHM"
+  )
 
 # Produto Interno Bruto a preços correntes
 PIBpc <- get_sidra(x = 5938, geo = "City", variable = 37) %>%
   separate(`Município`,
-           into = c("Municipio", "UF"),
+           into = c("Localidade", "UF"),
            sep = " - ") %>%
   mutate(code_muni = `Município (Código)`) %>%
   filter(UF == "GO") %>%
-  select(code_muni, Municipio, Ano, Valor) %>%
-  arrange(Municipio)
+  select(code_muni, Localidade, Ano, Valor) %>%
+  arrange(Localidade) %>% 
+  mutate(Ano = as.Date(Ano,format = "%Y"),Localidade = factor(Localidade))
 
 rm(
   Meso,

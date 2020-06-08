@@ -4,7 +4,7 @@ Micro.Area <- Area %>%
            Microrregiao == LocRef$Microrregiao) %>%
   select(Localidade, AreaTerritorial)
 
-PopulacaoProjecao %>%
+tabela <- PopulacaoProjecao %>%
   merge(RegioesGoias) %>%
   filter(Microrregiao == LocRef$Microrregiao & Ano == DataRef) %>%
   group_by(Localidade) %>%

@@ -41,7 +41,7 @@ IDMs <- rbind(tabela1, tabela2, tabela3) %>%
 tabela <- round(IDMs[, -1], 2)
 row.names(tabela) <- IDMs$Referencia
 
-kable(
+tabelaIDM <- kable(
   x = tabela,
   format = "latex",
   booktabs = TRUE,

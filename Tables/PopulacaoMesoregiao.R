@@ -4,7 +4,7 @@ AreaMicro <- Area %>%
   group_by(Microrregiao) %>%
   summarise(AreaTerritorial = sum(AreaTerritorial))
 
-TablePopulacaoMesorregiao <- PopulacaoProjecao %>%
+tabela <- PopulacaoProjecao %>%
   merge(RegioesGoias) %>%
   filter(Mesorregiao == LocRef$Mesorregiao & Ano == DataRef) %>%
   group_by(Microrregiao) %>%
