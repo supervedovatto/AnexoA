@@ -5,7 +5,8 @@ author: "Observatório do Mundo do Trabalho - Campus Goiânia"
 documentclass: book
 date: "`r format(Sys.time(), '%d de %B de %Y')`"
 output:
-  pdf_document:
+  bookdown::pdf_document2: default
+  # bookdown::html_document2: default
 header-includes:
 - \usepackage[brazil]{babel}
 - \usepackage{geometry} 
@@ -33,6 +34,7 @@ library(ggpubr)
 
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
                       fig.align = 'center',
                       warning = FALSE)
 
@@ -80,24 +82,18 @@ Top5 <- PopulacaoProjecao %>%
 
 MunicipiosSEGPLANRef <- Top5$Localidade
 
-myformat <- function(x) format(x,big.mark=".",decimal.mark=",",scientific=FALSE)
+myformat <- function(x,...) format(x,big.mark=".",decimal.mark=",",scientific=FALSE,...)
 
 save.image(file = "Datasets/POCV.RData")
 ```
 
 # Apresentação
 
-Nesse relatório fazemos alguns estudos complementares ao que já se encontra disponível nos sites:
-
-  - [Atlas Brasil - Região Metropolitana de Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_rm/goiania)
-  - [Atlas Brasil - Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_m/goiania_go)
-  - [Cidades - IBGE](https://cidades.ibge.gov.br)
-  
 ## O Estudo
 
 O estudo que se segue utiliza como base os dados da plataforma Instituto Mauro Borges.
 
-## Características do Município de `r LocRef$Localicade`
+## Características do Município de `r LocRef$Localidade`
 
 A cidade de `r LocRef$Localidade` possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoLocal)` habitantes e uma área territorial de `r myformat(AreaLocal)` km², deste modo a densidade populacional atual fica projetada em `r myformat(PopulacaoLocal/AreaLocal)` hab/km².
 A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificação do IBGE, na *Mesorregião `r LocRef$Mesorregiao`* e na *Microrregião de `r LocRef$Microrregiao`* e segundo a SEGPLAN na *Região de Planejamento `r LocRef$RPSEGPLAN`*.
@@ -110,28 +106,38 @@ A cidade de `r LocRef$Localidade` está localizada, de acordo com a classificaç
 source(file = "Analysis/Mesorregiao.R")
 ```
 
-A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as *Microrregiões de `r LocRefMicro$Microrregiao`* compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas `r head(LocRefPop$Localidade)`.
-Os municípios menos populosos são `r tail(LocRefPop$Localidade)`.
+Segundo o Instituto Mauro Borges (IMB), a atual divisão regional do Brasil em Mesorregiões e Microrregiões Geográficas foi aprovada pelo IBGE através da Resolução (PR) N°51 de 31/07/89. 
+As Mesorregiões buscam identificar áreas individualizadas em cada uma das Unidades Federadas, tomadas como universo de análise e definiu as Mesorregiões com base nas seguintes dimensões: o processo social como determinante, o quadro natural como condicionante e a rede de comunicação e de lugares como elemento da articulação espacial. 
+De acordo com a Resolução da Presidência (PR) Nº 11, de 5 de junho de 1990, Goiás é dividido em 5 Mesorregiões: *`r head(levels(RegioesGoias$Mesorregiao),-1)`* e *`r tail(levels(RegioesGoias$Mesorregiao),1)`* como apresentadas na Figura \@ref(fig:MapaMesorregioes).
 
-```{r,fig.cap="Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
+```{r MapaMesorregioes,fig.cap = "Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
 source(file = "Maps/Mesorregiões.R",print.eval = TRUE)
 ```
 
-```{r,fig.cap=paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao)}
+A *Mesorregião `r LocRef$Mesorregiao`*, possui em `r AnoRef` uma população projetada de `r myformat(PopulacaoMeso)` habitantes, incluindo as Microrregiões de `r LocRefMicro$Microrregiao` compreendendo um total de `r length(LocRefMeso$Localidade)` cidades com uma área total de `r myformat(AreaMeso)` km² sendo as cinco cidades mais populosas *`r head(head(LocRefPop$Localidade),-1)`* e *`r tail(head(LocRefPop$Localidade),1)`*.
+Os municípios menos populosos são *`r head(tail(LocRefPop$Localidade),-1)`* e *`r tail(tail(LocRefPop$Localidade),1)`*.
+
+Na Tabela \@ref(tab:PopulacaoMesorregiao) vemos a relação da população, área territorial e densidade populacional em cada uma das Microrregiões que compõem a *Mesorregião `r LocRef$Mesorregiao`*.
+```{r PopulacaoMesorregiao}
+source(file = "Tables/PopulacaoMesoregiao.R")
+tabela
+```
+
+
+```{r,fig.cap = paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao),fig.asp = 1.1}
 source(file = "Maps/Microrregiões.R")
 source(file = "Barplots/PopulaçãoMicrorregião.R")
-ArranjoMicrorregiao <- ggarrange(
+source(file = "Boxplots/IDHMicrorregião.R")
+source(file = "Barplots/PIBpcMesorregiao.R")
+ggarrange(
   MapsMicrorregioes,
   BarplotsPopulacaoMicrorregiao,
+  IDHMicrorregiao,
+  BarplotsPIBpcMesorregiao,
   common.legend = TRUE,
   align = "v",
   legend = "bottom"
 )
-```
-
-```{r}
-source(file = "Tables/PopulacaoMesoregiao.R")
-TablePopulacaoMesorregiao
 ```
 
 ```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
@@ -145,7 +151,7 @@ BarplotMunicipiosMicrorregiao
 source(file = "Analysis/Microrregiao.R")
 ```
 
-A *Microrregião de `r LocRef$Microrregiao`*, possui em `r AnoRef` uma população projetada em `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r length(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
+Segundo o IMB a população projetada da *Microrregião de `r LocRef$Microrregiao`* para o ano de `r AnoRef` é de `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r nrow(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
 Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
 
 ```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
@@ -153,7 +159,8 @@ source(file = "Piecharts/PopulacaoMicrorregiao.R",print.eval = TRUE)
 ```
 
 ```{r}
-source(file = "Tables/PopulacaoMicrorregiao.R",print.eval = TRUE)
+source(file = "Tables/PopulacaoMicrorregiao.R")
+tabela
 ```
 
 ### Região de Planejamento `r LocRef$RPSEGPLAN`
@@ -169,7 +176,7 @@ source(file = "Analysis/RegiaoPlanejamento.R")
 ```{r,fig.cap="Mapa das cidades Mesorregiões do Estado de Goiás segundo o IBGE."}
 source(file = "Maps/RPSEGPLANCidades.R")
 source(file = "Maps/MicrorregiãoCidades.R")
-ggarrange(MicrorregiaoCidades, RPSEGPLANcidades, align = "h")
+ggarrange(MicrorregiaoCidades,RPSEGPLANcidades,align = "h")
 ```
 
 A *Região de Planejamento `r LocRef$RPSEGPLAN`*, definida pela SEGPLAN, compreende um total `r nrow(LocalSEGPLAN)` cidades sendo as cinco cidades mais populosas `r head(RPSEGPLANPop$Localidade)`.
@@ -204,7 +211,8 @@ source(file = "Piecharts/PopulacaoCidadesSEGPLAN.R",print.eval = TRUE)
 ## Caracterização Geral das Profissões no Município
 
 ```{r}
-source(file = "Tables/EmpregosCAGED.R",print.eval = TRUE)
+source(file = "Tables/EmpregosCAGED.R")
+tabela
 ```
 
 ```{r,fig.cap=paste("Admitidos e Desligados por setor nos últimos 10 anos na Região de Planejamento",LocRef$RPSEGPLAN,"segundo dados da CAGED."),fig.asp = 1.618}
@@ -350,7 +358,7 @@ ComposicaoIDM("Trabalho")
 
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Trabalho para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 RadarIDM("Trabalho")
-```
+``` 
 
 ```{r,fig.cap=paste("Participação das diferentes variáveis que compôem o índice do IDM da Economia para o município de",LocRef$Localidade,"nos últimos anos"),fig.asp = 1}
 ComposicaoIDM("Economia")
@@ -394,6 +402,7 @@ source(file = "Radars/IDMGeral.R",print.eval = TRUE)
 
 ```{r}
 source(file = "Tables/IDM-radar.R",print.eval = TRUE)
+tabelaIDM
 ```
 
 ## Dados Institucionais: Atuação do Câmpus no seu território
@@ -413,5 +422,11 @@ source(file = "Tables/IDM-radar.R",print.eval = TRUE)
 # Escuta da Comunidade
 
 # Considerações Finais
+
+Nesse relatório fazemos alguns estudos complementares ao que já se encontra disponível nos sites:
+
+  - [Atlas Brasil - Região Metropolitana de Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_rm/goiania)
+  - [Atlas Brasil - Goiânia](http://www.atlasbrasil.org.br/2013/pt/perfil_m/goiania_go)
+  - [Cidades - IBGE](https://cidades.ibge.gov.br)
 
 # Referências Bibliográficas
