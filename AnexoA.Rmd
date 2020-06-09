@@ -123,26 +123,25 @@ source(file = "Tables/PopulacaoMesoregiao.R")
 tabela
 ```
 
-
-```{r,fig.cap = paste("Percentual da população em cada Microrregião da Mesorregião",LocRef$Mesorregiao),fig.asp = 1.1}
+Na Figura \@ref(fig:MesorregiaoGraficos) encontramos resumos de alguns indicadores socio-econômicos básicos para a *Mesorregião `r LocRef$Mesorregiao`*.
+```{r MesorregiaoGraficos,fig.cap = paste("Indicadores sócio-econômicos básicos para as Microrregiões da Mesorregião ",LocRef$Mesorregiao,".",sep=""),fig.asp = 1.5}
 source(file = "Maps/Microrregiões.R")
-source(file = "Barplots/PopulaçãoMicrorregião.R")
+source(file = "Barplots/PopulacaoMicrorregiao.R")
+source(file = "Boxplots/IDHGiniMicrorregião.R")
 source(file = "Boxplots/IDHMicrorregião.R")
 source(file = "Barplots/PIBpcMesorregiao.R")
 ggarrange(
-  MapsMicrorregioes,
   BarplotsPopulacaoMicrorregiao,
-  IDHMicrorregiao,
+  BoxPlotsIDHGiniMicrorregiao,
   BarplotsPIBpcMesorregiao,
+  IDHMicrorregiao,
+  MapsMicrorregioes,
   common.legend = TRUE,
-  align = "v",
+  align = "h",
+  ncol = 2, 
+  nrow = 3,
   legend = "bottom"
 )
-```
-
-```{r,fig.cap=paste("Número de municípios em cada Microrregião do",LocRef$Mesorregiao)}
-source(file = "Barplots/MunicipiosMicrorregioes.R")
-BarplotMunicipiosMicrorregiao
 ```
 
 ### Microrregião de `r LocRef$Microrregiao`
@@ -188,10 +187,10 @@ source(file = "Tables/PopulacaoRPSEGPLAN.R")
 TablePopulacaoRPSEGPLAN
 ```
 
-```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
-source(file = "Piecharts/PopulacaoSEGPLAN.R")
-PieChartPopulacaoSEGPLAN
-```
+# ```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
+# source(file = "Piecharts/PopulacaoSEGPLAN.R")
+# PieChartPopulacaoSEGPLAN
+# ```
 
 Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
 
