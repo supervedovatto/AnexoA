@@ -9,16 +9,12 @@ library(sidrar)
 library(dbplyr)
 library(tidyverse)
 
-Meso <-
-  tibble(
-    read_delim(
-      file = "Datasets/MesorregiõesIBGE.csv",
-      delim = ";",
-      escape_double = FALSE,
-      comment = "#",
-      trim_ws = TRUE
-    )
-  )
+Meso <- read_delim(file = "Datasets/MesorregiõesIBGE.csv",
+                   delim = ";",
+                   escape_double = FALSE,
+                   comment = "#",
+                   trim_ws = TRUE) %>% 
+  tibble()
 colnames(Meso) <- c("Mesorregiao", "Microrregiao")
 Meso$Mesorregiao <- factor(Meso$Mesorregiao)
 Meso$Microrregiao <- factor(Meso$Microrregiao)
