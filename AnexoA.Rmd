@@ -110,7 +110,7 @@ Segundo o Instituto Mauro Borges (IMB), a atual divisão regional do Brasil em M
 As Mesorregiões buscam identificar áreas individualizadas em cada uma das Unidades Federadas, tomadas como universo de análise e definiu as Mesorregiões com base nas seguintes dimensões: o processo social como determinante, o quadro natural como condicionante e a rede de comunicação e de lugares como elemento da articulação espacial. 
 De acordo com a Resolução da Presidência (PR) Nº 11, de 5 de junho de 1990, Goiás é dividido em 5 Mesorregiões: *`r head(levels(RegioesGoias$Mesorregiao),-1)`* e *`r tail(levels(RegioesGoias$Mesorregiao),1)`* como apresentadas na Figura \@ref(fig:MapaMesorregioes).
 
-```{r MapaMesorregioes,fig.cap = "Mapa das Mesorregiões do Estado de Goiás segundo o IBGE."}
+```{r MapaMesorregioes,fig.cap = "Mapa das Mesorregiões do Estado de Goiás segundo o IBGE.",fig.height=8}
 source(file = "Maps/Mesorregiões.R",print.eval = TRUE)
 ```
 
@@ -153,9 +153,9 @@ source(file = "Analysis/Microrregiao.R")
 Segundo o IMB a população projetada da *Microrregião de `r LocRef$Microrregiao`* para o ano de `r AnoRef` é de `r myformat(PopulacaoMicro)` habitantes, definida pelo IBGE, compreende um total `r nrow(LocRefMicro)` cidades com uma área total de `r myformat(AreaMicro)` km² sendo as cinco cidades mais populosas `r head(LocRef$MicrorregiaoPop$Localidade)`.
 Os municípios menos populosos são `r tail(LocRef$MicrorregiaoPop$Localidade)`.
 
-```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)}
-source(file = "Piecharts/PopulacaoMicrorregiao.R",print.eval = TRUE)
-```
+<!-- ```{r,fig.cap=paste("Percentual da população em cada cidade que a compõem a",LocRef$Mesorregiao)} -->
+<!-- source(file = "Piecharts/PopulacaoMicrorregiao.R",print.eval = TRUE) -->
+<!-- ``` -->
 
 ```{r}
 source(file = "Tables/PopulacaoMicrorregiao.R")
@@ -164,7 +164,7 @@ tabela
 
 ### Região de Planejamento `r LocRef$RPSEGPLAN`
 
-```{r,fig.cap="Mapa das Regiões de Planejamento do Estado de Goiás segundo a SEGPLAN"}
+```{r,fig.cap="Mapa das Regiões de Planejamento do Estado de Goiás segundo a SEGPLAN",fig.height=8}
 source(file = "Maps/RegiõesPlanejamento.R",print.eval = TRUE)
 ```
 
@@ -187,10 +187,14 @@ source(file = "Tables/PopulacaoRPSEGPLAN.R")
 TablePopulacaoRPSEGPLAN
 ```
 
-# ```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"}
-# source(file = "Piecharts/PopulacaoSEGPLAN.R")
-# PieChartPopulacaoSEGPLAN
-# ```
+```{r,fig.cap=paste("Densidade Populacional na Região de Planejamento",LocRef$RPSEGPLAN),fig.height=8}
+source(file = "Maps/RPSEGPLANDensidadePopulacional.R",print.eval = TRUE)
+```
+
+<!-- ```{r,fig.cap="Percentual da população de Goiás em cada Região de Planejamento definida pela SEGPLAN"} -->
+<!-- source(file = "Piecharts/PopulacaoSEGPLAN.R") -->
+<!-- PieChartPopulacaoSEGPLAN -->
+<!-- ``` -->
 
 Cidades da Região de Planejamento `r LocRef$RPSEGPLAN`.
 
@@ -199,8 +203,12 @@ source(file = "Tables/PopulacaoCidadesRPSEGPLAN.R")
 TableCidadesRPSEGPLAN
 ```
 
-```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)}
-source(file = "Piecharts/PopulacaoCidadesSEGPLAN.R",print.eval = TRUE)
+<!-- ```{r,fig.cap=paste("Percentual da população em cada cidade da Região de Planejamento",LocRef$RPSEGPLAN)} -->
+<!-- source(file = "Piecharts/PopulacaoCidadesSEGPLAN.R",print.eval = TRUE) -->
+<!-- ``` -->
+
+```{r,fig.cap=paste("IDH dos Municípios da Região de Planejamento ",LocRef$RPSEGPLAN,".",sep=""),fig.height=8}
+source(file = "Maps/RPSEGPLANIDH.R",print.eval = TRUE)
 ```
 
 # Aspectos Econômicos
@@ -240,6 +248,11 @@ TableEmpregoRais2
 ```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
 source(file = "Lines/RendimentoMedioRAIS.R")
 LineRendimentoMedioRAIS
+```
+
+```{r,fig.cap=paste("Comparativo do rendimento salarial médio (em reais) por setor em Goiás, na Região de Planejamento",LocRef$RPSEGPLAN,"e no município de",LocRef$Localidade,"nos últimos anos."),fig.asp = 1.618}
+source(file = "Maps/RPSEGPLANRendimentoSalarialMedio.R")
+MapRendimentoMedio
 ```
 
 As taxas para o setor da *Administração Pública Direta e Indireta* são muito pequenas quando comparadas com os demais setores devido à estabilidade no serviço público.

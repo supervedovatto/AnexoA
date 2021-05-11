@@ -5,7 +5,8 @@ MapaGoias %>%
   scale_fill_manual(values = mypallete) +
   theme(
     title = element_text(size = 8),
-    legend.position = "bottom",
+    legend.position = "bottom", 
+    legend.text = element_text(size = 6),
     axis.text = element_text(size = 5),
     axis.title = element_blank(),
     legend.title = element_blank()

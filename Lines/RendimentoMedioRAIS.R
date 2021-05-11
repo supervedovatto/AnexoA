@@ -1,6 +1,6 @@
 level1 <- paste("Município de",LocRef$Localidade)
 tabela1 <- Emprego %>% 
-  filter(!is.na(`Rendimento Médio`) & Localidade == LocRef$Localidade & Ano >= max(EmpregoRAIS$Ano)-10) %>% 
+  filter(!is.na(`Rendimento Médio`) & Localidade == LocRef$Localidade & Ano == AnoRef) %>% 
   select(Localidade,Ano, Setor,`Rendimento Médio`) %>%  
   mutate(Localidade = level1)
 
